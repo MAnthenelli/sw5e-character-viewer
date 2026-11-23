@@ -1,0 +1,846 @@
+:root {
+  color-scheme: dark;
+  --bg: #111619;
+  --panel: #1a2327;
+  --surface: #141c20;
+  --control: #243138;
+  --line: #34444b;
+  --edge: #6f868e;
+  --text: #f0f5f3;
+  --muted: #a6b7b3;
+  --gold: #e4c26d;
+  --blue: #7ec4f4;
+  --green: #7ad4a5;
+  --red: #ff948b;
+  --track: #2d393f;
+  --mana-force: #2b8be6;
+  --mana-force-temp: #67c7f9;
+  --mana-force-text: #8cd0ff;
+  --mana-tech: #14b8a6;
+  --mana-tech-temp: #5eead4;
+  --mana-tech-text: #5eead4;
+}
+.light {
+  color-scheme: light;
+  --bg: #f1f5f4;
+  --panel: #ffffff;
+  --surface: #f6f9f8;
+  --control: #e7efed;
+  --line: #c6d1ce;
+  --edge: #6b7d78;
+  --text: #14201f;
+  --muted: #4b5d59;
+  --gold: #785500;
+  --blue: #0e5a8a;
+  --green: #116245;
+  --red: #a92824;
+  --track: #d6e0dd;
+  --mana-force: #0284c7;
+  --mana-force-temp: #38bdf8;
+  --mana-force-text: #0369a1;
+  --mana-tech: #0d9488;
+  --mana-tech-temp: #2dd4bf;
+  --mana-tech-text: #0f766e;
+}
+
+* { box-sizing: border-box }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: .9375rem/1.45 system-ui, -apple-system, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+main { width: min(100%, 1180px); margin: auto; padding: 18px 16px 80px }
+h1, h2, h3, h4, p { margin: 0 }
+h1 { font-size: 1.5rem; line-height: 1.2 }
+h2 { font-size: 1.125rem; line-height: 1.3 }
+h3, .actionColumn > b { font-size: .9375rem; font-weight: 650 }
+small, .muted, .defenses { font-size: .8125rem; color: var(--muted) }
+
+button, input, select { font: inherit; color: var(--text); max-width: 100%; min-width: 0 }
+button, select, input:not([type=checkbox]) {
+  border: 1px solid var(--edge);
+  border-radius: 6px;
+  background: var(--control);
+  padding: 5px 9px;
+  min-height: 34px;
+}
+button, summary { cursor: pointer }
+button { font-weight: 600 }
+button:not(:disabled):hover, summary:hover { color: var(--blue) }
+button[aria-pressed=true]:hover, button.active:hover { color: var(--bg) }
+button:disabled { opacity: .5; cursor: default }
+button.active, [aria-pressed=true], #applyCondition:enabled {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+}
+:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px }
+#characterName:focus { outline: none }
+[hidden], .hidden { display: none !important }
+summary { font-weight: 600; padding-block: 4px }
+.srOnly {
+  position: absolute; width: 1px; height: 1px; padding: 0;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.danger { color: var(--red) }
+
+/* Layout primitives */
+.row, .top, .counter, .segmented, .restRow, .effectsToolbar { display: flex; align-items: center; gap: 8px }
+.top, .counter, .effectsToolbar { justify-content: space-between }
+.wrap, .segmented, .counter { flex-wrap: wrap }
+main > .top { margin-bottom: 12px }
+.panel {
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  min-width: 0;
+}
+
+/* Header Sheet Menu */
+.sheetMenuWrap { position: relative }
+.sheetMenuBtn { display: inline-flex; align-items: center; gap: 6px }
+.sheetMenuPanel {
+  position: absolute; right: 0; top: calc(100% + 6px); z-index: 30;
+  min-width: 210px;
+  display: grid; gap: 4px;
+  padding: 6px;
+  background: var(--panel);
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px #0006;
+}
+.sheetMenuPanel button {
+  width: 100%; justify-content: space-between; display: flex; align-items: center;
+  text-align: left; border-color: transparent; background: transparent;
+}
+.sheetMenuPanel button:not(:disabled):hover { background: var(--control) }
+.themeToggle span { display: inline-block; min-width: 3ch; margin-inline-start: .25rem; color: var(--muted) }
+
+/* Dashboard: Top 6 Stat Tiles, Defenses, Health, Saves, Effects */
+.dashboardGrid { display: grid; grid-template-columns: minmax(0, 1.38fr) minmax(0, 1fr); align-items: start; gap: 16px }
+.dashboardFormHead { display: flex; align-items: center; gap: 8px }
+#formTitle { font-size: 1.3125rem }
+#formRole { margin-bottom: 2px }
+
+.formStats {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  margin: 10px 0 0;
+  align-items: stretch;
+}
+.formStats > div {
+  border-top: 1px solid var(--line);
+  padding: 6px 4px 4px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 3px;
+}
+.formStats dt {
+  color: var(--muted);
+  font-size: .75rem;
+  line-height: 1.2;
+  white-space: normal;
+}
+.formStats dd {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 650;
+  line-height: 1.25;
+}
+.formStats .statSub {
+  display: block;
+  margin-top: 2px;
+  font-size: .75rem;
+  font-weight: 450;
+  color: var(--muted);
+  line-height: 1.25;
+}
+.formStats .detailName, .saveGrid .detailName, #defense .detailName { min-height: 24px; padding: 0 }
+
+/* Semantic Defenses Pills */
+#defense { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 10px 0 0 }
+.defenseFact {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: .8125rem;
+  line-height: 1.35;
+}
+.defenseFact.is-concentration { border-color: var(--blue); color: var(--blue); font-weight: 600 }
+.defenseFact.is-vulnerability { border-color: var(--red); color: var(--red); font-weight: 600 }
+.defenseFact.is-resistance, .defenseFact.is-immunity { border-color: var(--green); color: var(--text) }
+.defenseFact.is-senses { color: var(--muted) }
+.defenseFact.is-bonus { border-color: var(--gold); color: var(--text) }
+
+/* Health Bar & Controls */
+.dashboardHealth { margin-top: 12px }
+.healthLine { display: grid; grid-template-columns: 118px minmax(0, 1fr); align-items: center; gap: 8px }
+.healthLine.tempLine { margin-top: 4px }
+.big { font-size: 1.4375rem; font-weight: 750 }
+.bar { height: 9px; border-radius: 10px; overflow: hidden; background: var(--track) }
+.bar i { height: 100%; display: block; background: var(--red); transition: width .18s ease }
+.bar.temp { height: 5px }
+.bar.temp i { background: var(--gold) }
+.healthControls { margin-top: 8px }
+.healthControls button:is(.hpDamage, .hpHeal) { border-color: currentColor }
+.healthControls .hpDamage { color: var(--red) }
+.healthControls .hpHeal { color: var(--green) }
+.healthControls button:is(.hpDamage, .hpHeal):hover { text-decoration: underline }
+.hpAmount { display: inline-flex; align-items: center; gap: 6px }
+.hpAmount input { width: 4.2em }
+.tempCorrection { font-size: 13px; color: var(--muted) }
+#tempSource:not(:empty)::before { content: " · " }
+.pillToggle[aria-pressed="true"] { background: var(--gold); color: var(--bg); border-color: var(--gold); font-weight: 650 }
+
+/* Balanced 3x2 Saving Throws Grid */
+.saveGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 10px;
+  margin-top: 8px;
+}
+.stat { border-top: 1px solid var(--line); padding: 5px 0 3px; min-width: 0 }
+.stat small { display: block; font-size: 12px }
+.dashboardSaves .stat button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  font-size: .9375rem;
+}
+
+/* Active Effects */
+#activeStatus {
+  margin-top: 12px;
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: start;
+  flex-wrap: wrap;
+  scroll-margin-top: 90px;
+}
+.effectsToolbar { justify-content: start; gap: 8px }
+.effectEntries, #conditionList, #effects { display: contents }
+.effectEntries details {
+  min-width: 0; max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 0 8px;
+  overflow-wrap: anywhere;
+}
+.effectEntries summary { min-height: 32px; line-height: 24px }
+.effectEntries summary small { margin-left: 8px; font-weight: 400 }
+.effectEntries details[open] { flex-basis: min(100%, 32rem); padding-bottom: 8px }
+.effectEntries details > p { margin: 4px 0 8px }
+.effectEntries .entryNote { margin-inline-start: .45em; color: var(--muted); font-weight: 400 }
+#effects details > button + button, #conditionList details > button + button { margin-inline-start: .35rem }
+.conditionInstance { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; flex-wrap: wrap }
+.conditionInstance + .conditionInstance { border-top: 1px solid var(--line); padding-top: 6px }
+.exhaustionControl { display: flex; align-items: center; gap: 6px; margin: 6px 0; flex-wrap: wrap }
+
+/* Combat Layout: 4-zone Action Economy + Widened Resources Rail */
+.combatLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 332px;
+  gap: 12px;
+  align-items: start;
+  margin-block: 12px;
+}
+.combatTabs { display: flex; gap: 6px; margin-block-end: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line) }
+.combatTabs button { min-height: 40px; min-width: 84px }
+.combatTabs [aria-selected=true] { background: var(--gold); color: var(--bg); border-color: var(--gold) }
+.swordsIcon { font: 1.05em "Segoe UI Symbol", sans-serif }
+
+#action-economy .g3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px }
+.actionColumn { min-width: 0 }
+.actionColumn > b { display: block; margin-bottom: 8px }
+#actionRestriction:not(:empty) { display: block; margin-bottom: 8px }
+.conditionHint { display: block; color: var(--text); font-size: 13px; font-weight: 600 }
+
+.swAction { padding: 7px 0; border-top: 1px solid var(--line) }
+.swAction small { display: block; margin-top: 3px; line-height: 1.4 }
+.swActionControls { justify-content: space-between; gap: 4px }
+.swWeaponToggle { font-size: .78rem; padding: 3px 8px; min-height: 28px }
+.freeTriggers { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line) }
+.freeTriggers > b { display: block; margin-bottom: 4px }
+.freeTriggersGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px }
+.badge { font-size: 12px; margin-left: 4px; color: var(--muted) }
+
+/* Resources Panel: Mana Bars + Discrete Pips */
+#resourceRows { display: grid; gap: 10px; margin-top: 10px }
+.resourceManaBlock {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: grid;
+  gap: 6px;
+}
+.resourceManaBlock.is-force { border-left: 3px solid var(--mana-force) }
+.resourceManaBlock.is-tech { border-left: 3px solid var(--mana-tech) }
+.resourceManaHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.resourceManaHead .resourceName { font-weight: 650 }
+.resourceManaBlock.is-force .resourceCount { color: var(--mana-force-text); font-weight: 700 }
+.resourceManaBlock.is-tech .resourceCount { color: var(--mana-tech-text); font-weight: 700 }
+.manaBar { height: 10px; border-radius: 99px; overflow: hidden; background: var(--track) }
+.manaBar i { height: 100%; display: block; border-radius: 99px; transition: width .18s ease }
+.manaBar.is-force i { background: var(--mana-force) }
+.manaBar.is-tech i { background: var(--mana-tech) }
+
+.resourceTempWrap { display: grid; gap: 4px; padding-top: 2px }
+.resourceTempHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: .78rem;
+  color: var(--muted);
+}
+.manaBar.is-temp { height: 5px }
+.manaBar.is-temp.is-force i { background: var(--mana-force-temp) }
+.manaBar.is-temp.is-tech i { background: var(--mana-tech-temp) }
+.resourceTempControls { display: inline-flex; gap: 4px }
+.resourceTempControls button { min-height: 24px; min-width: 26px; padding: 1px 6px; font-size: .75rem }
+
+.resourcePoolControls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+  margin-top: 2px;
+}
+.resourcePoolControls button {
+  min-height: 32px;
+  padding: 3px 6px;
+  font-size: .84rem;
+}
+
+.resourceRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(2.8em, auto);
+  gap: 6px 8px;
+  align-items: center;
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
+}
+#resourceRows > .resourceRow:first-child { border-top: 0; padding-top: 0 }
+.resourceRow.resourceWrappedPips,
+.resourceRow.resourcePoolRow {
+  grid-template-columns: minmax(0, 1fr) auto;
+  row-gap: 5px;
+}
+.resourceRow.resourceWrappedPips .pips,
+.resourceRow.resourcePoolRow .resourcePoolControls {
+  grid-column: 1 / -1;
+  justify-content: flex-start;
+}
+.resourceName { overflow-wrap: anywhere }
+.resourceCount { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; font-size: .9375rem }
+.pips { display: flex; flex-wrap: wrap; gap: 3px; justify-content: flex-end }
+.pip {
+  display: grid; place-items: center;
+  width: 26px; height: 32px;
+  min-height: 24px;
+  background: transparent; border: 0; padding: 0;
+}
+.pip::before {
+  content: ""; width: 18px; height: 18px;
+  border: 1.5px solid var(--edge); border-radius: 50%; background: var(--control);
+}
+.pip.on::before { background: var(--gold); border-color: var(--gold) }
+.pip.success.on::before { background: var(--green); border-color: var(--green) }
+.pip.failure.on::before { background: var(--red); border-color: var(--red) }
+
+.restRow { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line) }
+.restRow button { flex: 1 }
+
+/* Skills Panel */
+.skillPanel { min-width: 0 }
+.skillFilters { margin-block: 0 8px }
+.skillSearchField { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; flex: 1 1 10rem; min-width: 0 }
+.skillSearchField input { width: 100% }
+.searchIcon {
+  width: 12px; height: 12px; border: 2px solid currentColor; border-radius: 50%;
+  position: relative; flex: none; margin-inline-end: 3px;
+}
+.searchIcon::after {
+  content: ""; position: absolute; width: 6px; height: 2px;
+  background: currentColor; transform: rotate(45deg); top: 8px; left: 7px;
+}
+.skillGroup + .skillGroup { margin-block-start: 12px }
+.skillGroup h3, #skillList > h3 { color: var(--muted); font-size: 13px; margin: 10px 0 4px }
+#skillList > h3:first-child { margin-top: 0 }
+.skillGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr)); column-gap: 16px }
+.skillGrid .skillCell {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  min-height: 40px; padding: 4px; border: 0; border-top: 1px solid var(--line);
+  border-radius: 0; background: transparent; text-align: start;
+}
+.skillCell > span { min-width: 0 }
+.skillCell b { flex: none; font-size: 1rem }
+.skillAbility { font-weight: 400; margin-inline-start: .4em }
+.skillTraining { margin-inline-start: .4em; color: var(--gold); font-weight: 650 }
+
+/* Roll Badges & Inline Detail Triggers */
+.rollBadge {
+  display: inline-grid; grid-template: 1fr / 1fr; place-items: center;
+  width: 22px; height: 22px; margin-inline-start: 3px; vertical-align: middle;
+  font-size: 12px; font-weight: 750; color: var(--muted); line-height: 1;
+}
+.rollBadge svg { grid-area: 1 / 1; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.5 }
+.rollBadge > span[aria-hidden] { grid-area: 1 / 1 }
+.rollBadge[data-mode=A] { color: var(--green) }
+.rollBadge[data-mode=D] { color: var(--red) }
+
+.infoBtn { min-width: 34px; min-height: 34px; font-size: 16px; line-height: 1; background: transparent; border-color: transparent; color: var(--blue) }
+.detailName {
+  min-height: 28px; padding: 0; border: 0; background: transparent;
+  color: var(--text); font-weight: 700; text-align: start;
+  text-decoration: underline dotted var(--edge); text-underline-offset: 3px;
+}
+
+/* Lightweight Non-Blocking Math Popover */
+.mathPopover {
+  margin: 0;
+  padding: 12px 14px;
+  max-width: min(22rem, calc(100vw - 24px));
+  max-height: min(26rem, calc(100dvh - 24px));
+  overflow: auto;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  box-shadow: 0 10px 28px #0007;
+  font-size: .875rem;
+}
+.mathPopover::backdrop { background: transparent }
+.mathPopoverHead { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px }
+.mathPopoverHead h3 { font-size: .95rem }
+.mathPopoverClose { min-width: 28px; min-height: 28px; padding: 0; border-color: transparent; background: transparent; font-size: 18px; line-height: 1 }
+.mathPopoverList { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 0 }
+.mathPopoverList dt { color: var(--muted); font-size: .8125rem }
+.mathPopoverList dd { margin: 0; text-align: right; font-weight: 600 }
+.mathPopoverNote { margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--line); color: var(--muted); font-size: .8125rem }
+
+/* Grouped Character Binder */
+.binderLayout {
+  display: grid;
+  grid-template-columns: 216px minmax(0, 1fr);
+  gap: 16px;
+  margin-top: 12px;
+  align-items: start;
+}
+.binderNav {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 12px;
+  border-right: 1px solid var(--line);
+}
+.binderGroup { display: flex; flex-direction: column; gap: 4px }
+.binderGroupLabel {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 2px 8px;
+}
+.binderNav button[role="tab"] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+  padding: 6px 10px;
+  min-height: 36px;
+  border: 1px solid transparent;
+  background: transparent;
+  font-weight: 550;
+}
+.binderNav button[role="tab"]:hover { background: var(--control) }
+.binderNav button[role="tab"][aria-selected="true"] {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+  font-weight: 700;
+}
+.binderNav .tabCount {
+  font-size: .75rem;
+  opacity: .82;
+  font-variant-numeric: tabular-nums;
+}
+.binderContent { min-width: 0 }
+.managerPane { min-width: 0 }
+.managerTools { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px }
+.managerTools input[type="search"] { flex: 1 1 12rem }
+.inventoryMeta { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .8rem; font-size: .88rem }
+.creditsInput { width: 6.5em; margin-inline-start: 4px }
+
+/* Single-Column Scannable Binder Lists & Full-Span Level Headers */
+.library { display: grid; grid-template-columns: 1fr; margin-top: 6px }
+.library > h3 {
+  grid-column: 1 / -1;
+  margin: 14px 0 4px;
+  padding-bottom: 4px;
+  font-size: .82rem;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--muted);
+  border-bottom: 1px solid var(--line);
+}
+.library > h3:first-child { margin-top: 4px }
+.item {
+  padding-block: 8px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.library > h3 + .item { border-top: 0 }
+.item > * { min-width: 0 }
+.inventoryItem > :first-child, .catalogItem > :first-child { overflow-wrap: anywhere }
+.inventoryControls { flex: none; flex-wrap: wrap; gap: 4px; justify-content: flex-end }
+.qtyBtn { min-width: 30px; padding-inline: 8px }
+
+/* Binder Reference Sections (Class, Archetype, Background & Proficiencies) */
+.binderSection { display: grid; gap: 14px }
+.binderCard {
+  padding: 12px 14px;
+  border-radius: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: grid;
+  gap: 8px;
+}
+.binderCard h3 { font-size: .95rem; color: var(--text) }
+.featureAccordion {
+  border-top: 1px solid var(--line);
+  padding-block: 6px;
+}
+.featureAccordion:first-of-type { border-top: 0 }
+.featureAccordion summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 32px;
+}
+.featureAccordion .featureLevel { font-size: .78rem; color: var(--muted); font-weight: 500; flex: none }
+.featureAccordion .ruleText { margin-top: 8px; padding-left: 2px }
+.profList { display: grid; gap: 6px }
+.profRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 6px;
+  border-top: 1px solid var(--line);
+  font-size: .9rem;
+}
+.profRow:first-child { border-top: 0; padding-top: 0 }
+.profSource { font-size: .8rem; color: var(--muted); text-align: right }
+
+/* SearchablePicker Primitive */
+.searchablePicker { display: grid; gap: 8px; margin-top: 4px }
+.pickerSearch { width: 100% }
+.pickerChips { display: flex; flex-wrap: wrap; gap: 5px }
+.pickerChip { min-height: 30px; padding: 3px 9px; font-size: .82rem }
+.pickerList {
+  max-height: 15rem;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.pickerRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 4px 6px;
+  border-top: 1px solid var(--line);
+}
+.pickerRow:first-child { border-top: 0 }
+.pickerOptionBtn {
+  flex: 1;
+  text-align: left;
+  border-color: transparent;
+  background: transparent;
+  padding: 5px 8px;
+  min-height: 36px;
+  font-weight: 550;
+}
+.pickerOptionBtn:hover { background: var(--control) }
+.pickerOptionBtn[aria-pressed="true"] { background: var(--gold); color: var(--bg); font-weight: 700 }
+.pickerPreview {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: .85rem;
+  max-height: 11rem;
+  overflow: auto;
+}
+.directChips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px }
+.directChips button { min-height: 36px }
+
+/* Cast Dialog */
+#castDialog { --dialog-inset: 16px }
+#castDialog[data-stage="options"] { width: min(calc(100% - 24px), 34rem) }
+#castBody > :first-child { margin-block-start: 0 }
+.castRoleGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px }
+.castRoleGrid button { display: flex; align-items: center; gap: 8px; text-align: left; min-height: 44px }
+.castRoleGrid small { margin-inline-start: auto }
+.castSpellList h3 { margin: 12px 0 2px; font-size: .85rem; color: var(--muted) }
+.castSpellList h3:first-child { margin-top: 0 }
+.castSpellRow {
+  display: flex; width: 100%; align-items: center; flex-wrap: wrap; gap: 6px;
+  padding: 6px 8px; min-height: 44px;
+  border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
+  background: transparent; text-align: start;
+}
+.castSpellRow:hover { background: var(--control) }
+.castSpellRow small { margin-inline-start: auto }
+.castMark {
+  display: inline-grid; place-items: center; width: 22px; height: 22px; min-height: 0; padding: 0;
+  font-size: 12px; font-weight: 700;
+}
+.castMark[title="Concentration"] { color: var(--blue); border: 1px solid; border-radius: 50% }
+.castDisabledHint { display: block; margin-top: 6px; color: var(--gold); font-size: .82rem; font-weight: 600 }
+
+/* Unified ModalFrame Dialogs */
+.sheetDialog {
+  --dialog-inset: clamp(16px, 4vw, 24px);
+  width: min(calc(100% - 24px), 34rem);
+  max-height: calc(100dvh - 24px);
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--edge);
+  border-radius: 12px;
+}
+.sheetDialog.modalReading, #infoModal { width: min(calc(100% - 24px), 42rem) }
+.sheetDialog.modalCatalog, :is(#itemCatalog, #featCatalog, #powerCatalog, #optionCatalog) { width: min(calc(100% - 24px), 48rem) }
+.sheetDialog[open], .sheetDialog > form { display: flex; flex-direction: column; max-height: calc(100dvh - 24px) }
+.sheetDialog > form { min-height: 0 }
+.sheetDialog::backdrop { background: #0009 }
+.dialogHeader, .dialogFooter { flex: none; padding: 8px var(--dialog-inset) }
+.dialogHeader { border-bottom: 1px solid var(--line); min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 8px }
+.dialogHeader h2 { overflow-wrap: anywhere }
+.dialogFooter { border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap }
+.dialogBody {
+  min-height: 0;
+  padding: 16px var(--dialog-inset);
+  overflow: auto;
+  overscroll-behavior: contain;
+  overflow-wrap: anywhere;
+}
+.dialogHeader button, .dialogFooter button { min-height: 40px }
+.dialogClose {
+  flex: none; width: 44px; min-height: 44px; font-size: 24px;
+  line-height: 1; background: transparent; border-color: transparent;
+}
+.modalFormFields { display: grid; gap: 12px }
+.modalFormFields label { display: grid; gap: 4px; font-size: .9rem }
+.modalFormFields label.row { display: flex; align-items: center; gap: 8px }
+
+/* Info Modal & Rules Typography (renderRules) */
+#infoBody > :first-child { margin-block-start: 0 }
+#infoBody > :last-child { margin-block-end: 0 }
+#infoBody > * + * { margin-block-start: 14px }
+.infoFacts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 7.5rem), 1fr));
+  gap: 8px 16px;
+  margin: 0;
+}
+.infoFacts dt { font-size: 13px; color: var(--muted) }
+.infoFacts dd { margin: 3px 0 0 }
+.infoRules { line-height: 1.55 }
+
+.ruleText > * + * { margin-block-start: .65rem }
+.ruleText h3 { font-size: .95rem; margin-top: .9rem; color: var(--text) }
+.ruleText h4 { font-size: .88rem; margin-top: .75rem; color: var(--muted) }
+.ruleText :is(ul, ol) { margin: 0; padding-inline-start: 1.35rem }
+.ruleText li + li { margin-top: 3px }
+.ruleText hr { border: 0; border-top: 1px solid var(--line); margin: .85rem 0 }
+.ruleText blockquote.statblock {
+  margin: .75rem 0;
+  padding: 10px 12px;
+  border-left: 3px solid var(--gold);
+  background: var(--surface);
+  border-radius: 0 8px 8px 0;
+}
+.ruleText blockquote.statblock > * + * { margin-top: .45rem }
+.tableScroll { overflow-x: auto; max-width: 100%; margin: .5rem 0 }
+.ruleText table { width: 100%; border-collapse: collapse; font-size: .875rem }
+.ruleText th, .ruleText td { border: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top }
+.ruleText th { background: var(--surface); font-weight: 650 }
+.ruleText .nowrapCol { white-space: nowrap }
+
+/* Weapon Property Chips */
+.swPropChips { display: flex; flex-wrap: wrap; gap: 5px }
+.swPropChip {
+  min-height: 28px; padding: 2px 8px; font-size: .82rem;
+  border-radius: 4px; border: 1px solid var(--line); background: var(--surface); color: inherit; cursor: pointer;
+}
+.swPropChip:hover { border-color: var(--gold) }
+.swPropChip[aria-pressed="true"] { background: var(--gold); color: var(--bg); border-color: var(--gold) }
+.swPropTag {
+  display: inline-flex; align-items: center; padding: 2px 7px; font-size: .82rem;
+  color: var(--muted); border: 1px dashed var(--line); border-radius: 4px;
+}
+.swPropDetail {
+  margin: 10px 0 12px; padding: 10px 12px;
+  border: 1px solid var(--gold); border-radius: 6px;
+  background: color-mix(in srgb, var(--gold) 8%, transparent);
+}
+.swPropDetail > b { display: block; margin-bottom: 4px; color: var(--gold) }
+
+/* Effect Editor */
+#conditionEditor .effectFields { display: grid; gap: 12px }
+#conditionForm label { display: grid; gap: 4px; font-size: 14px }
+#conditionChoices { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 5px; padding: 0 }
+#conditionChoices button { text-align: left; font-size: 14px }
+#conditionChoices button[value=Custom] { order: -1 }
+#conditionPreview { color: var(--muted); font-size: 14px }
+#conditionPreview:empty { display: none }
+
+/* Catalog Filters & Footers */
+.filters { display: flex; flex-wrap: wrap; gap: 8px }
+.catalogFilters { margin: 0 0 12px; gap: 8px }
+.catalogFilters > input { flex: 1 1 14rem }
+.catalogFilters select { flex: 0 1 auto }
+.catalogFooter { display: grid; gap: 8px; justify-content: stretch }
+.catalogFooter > .row { justify-content: space-between }
+.catalogItem .inventoryControls { flex-wrap: nowrap }
+
+/* Rest Dialog */
+#restDialog button, #restDialog select { min-height: 40px }
+.restBody > section { display: grid; gap: 8px; border-top: 1px solid var(--line); margin-top: 14px; padding-top: 14px }
+.restBody h3 { margin: 0 }
+.restSummary, .restRolls { margin: 0; padding-left: 1.25rem }
+.restSummary li + li, .restRolls li + li { margin-top: 4px }
+.restPrimary:enabled { background: var(--gold); color: var(--bg); border-color: var(--gold) }
+.restPrimary:enabled:hover { color: var(--bg); text-decoration: underline }
+#restHealingPreview { font-weight: 600 }
+.hitDieChips { display: flex; flex-wrap: wrap; gap: 5px }
+.hitDieChips button { min-width: 36px; min-height: 36px; padding: 4px 8px }
+
+/* Import Review */
+#loadError { margin: 8px 0 }
+.importReview > p { margin: 5px 0 12px }
+.importReview > h3 { margin-top: 12px }
+.importReview label { display: flex; align-items: flex-start; gap: 7px; margin-block: 8px }
+.importReview fieldset { min-inline-size: 0; border: 1px solid var(--line); padding: 4px 10px; border-radius: 8px }
+.importWarning { font-weight: 650; color: var(--gold) }
+
+/* Toast Feedback */
+#feedback {
+  position: fixed; bottom: 12px; right: 12px; z-index: 25;
+  width: max-content; max-width: calc(100% - 24px);
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid var(--edge); border-radius: 8px;
+  padding: 8px 10px; background: var(--panel); box-shadow: 0 3px 18px #0004;
+}
+.notice { white-space: pre-line; overflow-wrap: anywhere; font-size: 14px; flex: 1 1 12rem }
+
+/* Responsive Breakpoints: Tablet (<=1000px) & Mobile (<=720px / <=480px) */
+.mobileNav, .stickyState { display: none }
+
+@media (min-width: 721px) {
+  .dashboardGrid { grid-template-rows: auto 1fr; row-gap: 8px }
+  .dashboardMain { grid-row: 1 / 3 }
+  #activeStatus { grid-column: 2; align-self: start; margin-top: 0 }
+}
+
+@media (max-width: 1000px) {
+  .combatLayout { grid-template-columns: minmax(0, 1fr) }
+  .binderLayout { grid-template-columns: 184px minmax(0, 1fr) }
+}
+
+@media (max-width: 720px) {
+  main { padding: 86px 8px 100px }
+  main > .top { margin-bottom: 8px }
+  .panel { padding: 12px }
+  .mobileNav, .stickyState {
+    position: fixed; left: 0; right: 0;
+    display: flex; align-items: center;
+    background: var(--panel); border-bottom: 1px solid var(--line); z-index: 20;
+  }
+  .mobileNav { top: 0; height: 44px }
+  .mobileNav a {
+    flex: 1; text-align: center; min-height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 600;
+  }
+  .mobileNav a[aria-current="location"] { color: var(--text); box-shadow: inset 0 -3px var(--gold) }
+  .stickyState { top: 44px; height: 34px; gap: 8px; padding: 0 10px; white-space: nowrap; font-size: 12px }
+  .stickyForm { overflow: hidden; text-overflow: ellipsis; min-width: 0; margin-right: auto }
+  .stickyState a { color: var(--blue); padding-block: 6px }
+  .sectionAnchor { scroll-margin-top: 84px }
+
+  .dashboardGrid { grid-template-columns: minmax(0, 1fr); gap: 10px }
+  .formStats { grid-template-columns: repeat(3, minmax(0, 1fr)) }
+  #activeStatus { margin-top: 0 }
+  .combatLayout { margin-block: 8px; gap: 8px }
+  #action-economy .g3 { grid-template-columns: minmax(0, 1fr); gap: 8px }
+  .actionColumn + .actionColumn { border-top: 1px solid var(--line); padding-top: 8px }
+  .freeTriggersGrid { grid-template-columns: minmax(0, 1fr) }
+
+  /* Mobile Grouped Binder: horizontal pill strip */
+  .binderLayout { grid-template-columns: minmax(0, 1fr); gap: 10px }
+  .binderNav {
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 0 0 8px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    -webkit-overflow-scrolling: touch;
+  }
+  .binderGroup { flex-direction: row; align-items: center; gap: 4px; flex: none }
+  .binderGroupLabel { padding: 0 4px 0 2px; white-space: nowrap }
+  .binderNav button[role="tab"] { width: auto; white-space: nowrap; min-height: 44px; padding: 6px 12px; border-color: var(--line); background: var(--control) }
+}
+
+@media (max-width: 480px) {
+  .inventoryItem, .catalogItem { flex-wrap: wrap }
+  .inventoryItem > :first-child, .catalogItem > :first-child { flex-basis: 100% }
+  .swActionControls { justify-content: flex-start }
+  #castDialog, #castDialog[data-stage="options"] {
+    --dialog-inset: 12px; width: 100%; max-width: 100%;
+    inset: auto 0 0; margin: 0; max-height: 90dvh;
+  }
+  .castRoleGrid { grid-template-columns: minmax(0, 1fr) }
+}
+
+@media (pointer: coarse) {
+  button, select, input:not([type=checkbox]) { min-height: 44px }
+  .pip { width: 34px; height: 44px }
+  .infoBtn { min-width: 44px; min-height: 44px }
+  .swWeaponToggle, .swPropChip, .pickerChip { min-height: 44px }
+  .skillGrid .skillCell { min-height: 44px }
+  .formStats .detailName, .saveGrid .detailName, #defense .detailName { min-height: 44px; display: inline-flex; align-items: center }
+}

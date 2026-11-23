@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <meta name="theme-color" content="#111619">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="./icons/sw5e-d20-180.png">
+    <link rel="icon" type="image/x-icon" href="./icons/favicon-d20.ico">
+    <title>SW5e Character Viewer</title>
+    <link rel="stylesheet" href="styles/sheet.css">
+  </head><body>
+    <nav class="mobileNav" aria-label="Sheet sections">
+      <a href="#dashboard">Status</a>
+      <a href="#action-economy">Actions</a>
+      <a href="#resources">Resources</a>
+      <a href="#info">Manage</a>
+    </nav>
+    <div id="stickyState" class="stickyState"></div>
+    <main>
+      <div class="top wrap">
+        <div><h1 id="characterName" tabindex="-1">SW5e Character Viewer</h1><div id="characterSubtitle" class="muted"></div></div>
+        <div class="row wrap">
+          <button type="button" id="undo" disabled>Undo</button>
+          <div class="sheetMenuWrap">
+            <button type="button" id="sheetMenuBtn" class="sheetMenuBtn" aria-haspopup="true" aria-expanded="false" aria-controls="sheetMenuPanel">Sheet <span aria-hidden="true">▾</span></button>
+            <div id="sheetMenuPanel" class="sheetMenuPanel" role="menu" hidden>
+              <button type="button" id="importButton" role="menuitem" aria-haspopup="dialog">Import character</button>
+              <button type="button" id="exportBackup" role="menuitem" disabled>Export backup</button>
+              <button type="button" id="theme" class="themeToggle" role="switch" aria-checked="true">Dark mode <span id="themeState" aria-hidden="true">On</span></button>
+            </div>
+          </div>
+          <input id="characterFile" type="file" accept=".json,application/json" hidden>
+        </div>
+      </div>
+        <p id="loadError" class="danger" role="alert" hidden></p>
+      <section class="panel" id="emptySheet">
+        <h2>Open a character</h2>
+        <p style="margin:6px 0 12px" class="muted">Choose a JSON export from the SW5e character builder.</p>
+        <button type="button" id="emptyImportBtn">Import character JSON</button>
+      </section>
+      <div id="playSheet" hidden>
+      <section id="dashboard" class="panel sectionAnchor">
+        <div class="dashboardGrid">
+          <div class="dashboardMain">
+            <div class="dashboardFormHead"><div><h2 id="formTitle"></h2><div id="formRole" class="muted"></div></div><button id="currentFormInfo" class="infoBtn" aria-label="Character details" title="Character details">ⓘ</button></div>
+            <div id="formData"></div>
+            <div id="defense" class="defenses"></div>
+            <div class="dashboardHealth">
+              <div class="healthLine"><div><span id="hp" class="big"></span> / <span id="maximumHP" data-character-limit="maximumHitPoints"></span> HP</div><div class="bars"><div class="bar"><i id="hpbar"></i></div></div></div>
+              <div class="healthLine tempLine"><div>Temporary HP <b id="temp"></b> <small id="tempSource" class="muted"></small></div><div class="bars"><div class="bar temp"><i id="tempbar"></i></div></div></div>
+              <div class="row wrap healthControls"><label class="hpAmount">HP amount<input id="amount" type="number" min="0" value="1"></label><button id="damage" class="hpDamage">Damage</button><button type="button" id="damageResisted" class="pillToggle" aria-pressed="false" hidden title="Halve incoming damage for an active resistance">Resisted (½)</button><button type="button" id="damageCorroded" class="pillToggle" aria-pressed="false" hidden title="Add Corroded bonus weapon damage">Weapon (+Corroded)</button><button id="heal" class="hpHeal">Heal</button><button id="addTemp" title="Keep the higher temporary HP total; temporary HP does not stack">Gain temporary HP</button><button type="button" id="fanaticTempBtn" hidden aria-haspopup="dialog" title="Fanatic: gain 1d4 + Constitution modifier temporary HP when a creature within 30 ft drops to 0 HP (no action)">Fanatic temporary HP</button><details class="tempCorrection"><summary>Correct temporary HP</summary><div class="row wrap"><button id="setTemp" title="Correction control: replace the current temporary HP total">Set temporary HP</button><button id="clearTemp">Clear temporary HP</button></div></details></div>
+              <div id="death" class="hidden" style="margin-top: 8px"><b class="danger">Death Saves</b><div id="deathPips"></div></div>
+            </div>
+          </div>
+          <div class="dashboardSaves">
+            <h2>Saving throws</h2>
+            <div id="saves" class="saveGrid"></div>
+          </div>
+          <section id="activeStatus" aria-label="Active effects">
+            <div class="effectsToolbar"><h3>Effects</h3><button id="openEffects" aria-haspopup="dialog">+ Effect</button></div>
+            <div class="effectEntries"><div id="effects"></div><div id="conditionList"></div></div>
+          </section>
+        </div>
+      </section>
+      <div class="combatLayout">
+        <section id="action-economy" class="panel sectionAnchor">
+          <div class="combatTabs" role="tablist" aria-label="Combat view">
+            <button type="button" id="actionsTab" role="tab" aria-controls="actionsPane" aria-selected="true"><span class="swordsIcon" aria-hidden="true">&#x2694;&#xFE0E;</span> Actions</button>
+            <button type="button" id="skillsTab" role="tab" aria-controls="skillsPane" aria-selected="false" tabindex="-1">Skills</button>
+            <button type="button" id="openStandardActions" style="margin-inline-start:auto" aria-haspopup="dialog">Standard actions</button>
+          </div>
+          <div id="actionsPane" role="tabpanel" aria-labelledby="actionsTab">
+            <small id="actionRestriction" class="conditionHint"></small>
+          <div class="g3">
+            <div class="actionColumn">
+              <b>Action</b>
+              <div id="actions"></div>
+            </div>
+            <div class="actionColumn">
+              <b>Bonus action</b>
+              <div id="bonus"></div>
+            </div>
+            <div class="actionColumn">
+              <b>Reaction</b>
+              <div id="reaction"></div>
+            </div>
+          </div>
+          <div id="freeTriggersWrap" class="freeTriggers" hidden>
+            <b>No Action / Special</b>
+            <div id="freeTriggers" class="freeTriggersGrid"></div>
+          </div>
+          </div>
+          <div id="skillsPane" class="skillPanel" role="tabpanel" aria-labelledby="skillsTab" hidden>
+            <div class="row wrap skillFilters">
+              <label class="skillSearchField"><span class="searchIcon" aria-hidden="true"></span><span class="srOnly">Search skills</span><input id="skillSearch" type="search" placeholder="Search skills" autocomplete="off"></label>
+              <select id="skillSort" aria-label="Sort skills"><option value="name">A–Z</option><option value="ability">By ability</option></select>
+            </div>
+            <div id="skillList"></div>
+          </div>
+        </section>
+        <section id="resources" class="panel sectionAnchor">
+          <h2>Resources</h2>
+          <div id="resourceRows"></div>
+          <div class="restRow">
+            <button type="button" id="shortRest" aria-haspopup="dialog">Short rest</button>
+            <button type="button" id="longRest" aria-haspopup="dialog">Long rest</button>
+          </div>
+        </section>
+      </div>
+      <section id="info" class="panel sectionAnchor">
+        <details><summary>Manage character</summary>
+          <div class="binderLayout">
+            <nav id="binderNav" class="binderNav" role="tablist" aria-label="Character binder">
+              <div class="binderGroup" id="binderCharGroup">
+                <div class="binderGroupLabel">Character</div>
+                <button type="button" id="classTab" data-manager="class" role="tab" aria-controls="classManager" aria-selected="true"><span>Class</span></button>
+                <button type="button" id="archetypeTab" data-manager="archetype" role="tab" aria-controls="archetypeManager" aria-selected="false" tabindex="-1"><span>Archetype</span></button>
+                <button type="button" id="backgroundTab" data-manager="background" role="tab" aria-controls="backgroundManager" aria-selected="false" tabindex="-1"><span>Background &amp; Proficiencies</span></button>
+              </div>
+              <div class="binderGroup" id="binderPowersGroup">
+                <div class="binderGroupLabel">Powers &amp; Combat</div>
+                <button type="button" id="forcePowerTab" data-manager="forcePowers" role="tab" aria-controls="forcePowerManager" aria-selected="false" tabindex="-1" hidden><span>Force Powers</span><span class="tabCount" id="forcePowerTabCount"></span></button>
+                <button type="button" id="techPowerTab" data-manager="techPowers" role="tab" aria-controls="techPowerManager" aria-selected="false" tabindex="-1" hidden><span>Tech Powers</span><span class="tabCount" id="techPowerTabCount"></span></button>
+                <button type="button" id="maneuversTab" data-manager="maneuvers" role="tab" aria-controls="maneuversManager" aria-selected="false" tabindex="-1" hidden><span>Maneuvers</span><span class="tabCount" id="maneuversTabCount"></span></button>
+                <button type="button" id="fightingStylesTab" data-manager="fightingStyles" role="tab" aria-controls="fightingStylesManager" aria-selected="false" tabindex="-1" hidden><span>Fighting Styles</span><span class="tabCount" id="fightingStylesTabCount"></span></button>
+                <button type="button" id="fightingMasteriesTab" data-manager="fightingMasteries" role="tab" aria-controls="fightingMasteriesManager" aria-selected="false" tabindex="-1" hidden><span>Fighting Masteries</span><span class="tabCount" id="fightingMasteriesTabCount"></span></button>
+                <button type="button" id="lightsaberFormsTab" data-manager="lightsaberForms" role="tab" aria-controls="lightsaberFormsManager" aria-selected="false" tabindex="-1" hidden><span>Lightsaber Forms</span><span class="tabCount" id="lightsaberFormsTabCount"></span></button>
+              </div>
+              <div class="binderGroup" id="binderGearGroup">
+                <div class="binderGroupLabel">Gear &amp; Feats</div>
+                <button type="button" id="inventoryTab" data-manager="inventory" role="tab" aria-controls="inventoryManager" aria-selected="false" tabindex="-1"><span>Inventory</span><span class="tabCount" id="inventoryTabCount"></span></button>
+                <button type="button" id="featTab" data-manager="feats" role="tab" aria-controls="featManager" aria-selected="false" tabindex="-1"><span>Feats</span><span class="tabCount" id="featTabCount"></span></button>
+              </div>
+            </nav>
+            <div class="binderContent">
+              <div id="classManager" class="managerPane" role="tabpanel" aria-labelledby="classTab">
+                <div class="binderSection">
+                  <div id="classOverviewCard" class="binderCard"></div>
+                  <div id="classImprovementBox" class="library"></div>
+                  <div id="classOptionsWrap" class="binderCard" hidden>
+                    <div class="managerTools row wrap">
+                      <div id="classOptionsMeta" class="inventoryMeta muted"></div>
+                      <input id="classOptionsSearch" class="librarySearch" type="search" placeholder="Filter class options" aria-label="Filter class options" autocomplete="off">
+                    </div>
+                    <div id="ownedClassOptionsList" class="library"></div>
+                    <div id="availableClassOptionsList" class="library"></div>
+                  </div>
+                  <div id="classFeaturesCard" class="binderCard"></div>
+                </div>
+              </div>
+              <div id="archetypeManager" class="managerPane" hidden role="tabpanel" aria-labelledby="archetypeTab">
+                <div id="archetypeContent" class="binderSection"></div>
+              </div>
+              <div id="backgroundManager" class="managerPane" hidden role="tabpanel" aria-labelledby="backgroundTab">
+                <div id="backgroundContent" class="binderSection"></div>
+              </div>
+              <div id="forcePowerManager" class="managerPane" hidden role="tabpanel" aria-labelledby="forcePowerTab">
+                <div class="managerGroup">
+                  <div class="managerTools row wrap">
+                    <button type="button" id="openForcePowerCatalog" aria-haspopup="dialog">Force power library</button>
+                    <input type="search" id="knownForceSearch" placeholder="Filter Force powers" aria-label="Filter Force powers" autocomplete="off">
+                    <div id="forcePowerMeta" class="inventoryMeta muted"></div>
+                  </div>
+                  <div id="knownForcePowerList" class="library"></div>
+                </div>
+              </div>
+              <div id="techPowerManager" class="managerPane" hidden role="tabpanel" aria-labelledby="techPowerTab">
+                <div class="managerGroup">
+                  <div class="managerTools row wrap">
+                    <button type="button" id="openTechPowerCatalog" aria-haspopup="dialog">Tech power library</button>
+                    <input type="search" id="knownTechSearch" placeholder="Filter Tech powers" aria-label="Filter Tech powers" autocomplete="off">
+                    <div id="techPowerMeta" class="inventoryMeta muted"></div>
+                  </div>
+                  <div id="knownTechPowerList" class="library"></div>
+                </div>
+              </div>
+              <div id="maneuversManager" class="managerPane" hidden role="tabpanel" aria-labelledby="maneuversTab">
+                <div class="managerGroup">
+                  <div class="managerTools row wrap">
+                    <button type="button" id="openManeuversCatalog" aria-haspopup="dialog">Maneuver library</button>
+                    <input type="search" id="ownedManeuversSearch" placeholder="Filter maneuvers" aria-label="Filter maneuvers" autocomplete="off">
+                    <div id="maneuversMeta" class="inventoryMeta muted"></div>
+                  </div>
+                  <div id="ownedManeuversList" class="library"></div>
+                </div>
+              </div>
+              <div id="fightingStylesManager" class="managerPane" hidden role="tabpanel" aria-labelledby="fightingStylesTab">
+                <div class="managerGroup">
+                  <div class="managerTools row wrap">
+                    <button type="button" id="openFightingStylesCatalog" aria-haspopup="dialog">Fighting style library</button>
+                    <input type="search" id="ownedFightingStylesSearch" placeholder="Filter styles" aria-label="Filter styles" autocomplete="off">
+                    <div id="fightingStylesMeta" class="inventoryMeta muted"></div>
+                  </div>
+                  <div id="ownedFightingStylesList" class="library"></div>
+                </div>
+              </div>
+              <div id="fightingMasteriesManager" class="managerPane" hidden role="tabpanel" aria-labelledby="fightingMasteriesTab">
+                <div class="managerGroup">
+                  <div class="managerTools row wrap">
+                    <button type="button" id="openFightingMasteriesCatalog" aria-haspopup="dialog">Fighting mastery library</button>
+                    <input type="search" id="ownedFightingMasteriesSearch" placeholder="Filter masteries" aria-label="Filter masteries" autocomplete="off">
+                    <div id="fightingMasteriesMeta" class="inventoryMeta muted"></div>
+                  </div>
+                  <div id="ownedFightingMasteriesList" class="library"></div>
+                </div>
+              </div>
+              <div id="lightsaberFormsManager" class="managerPane" hidden role="tabpanel" aria-labelledby="lightsaberFormsTab">
+                <div class="managerGroup">
+                  <div class="managerTools row wrap">
+                    <button type="button" id="openLightsaberFormsCatalog" aria-haspopup="dialog">Lightsaber form library</button>
+                    <input type="search" id="ownedLightsaberFormsSearch" placeholder="Filter forms" aria-label="Filter forms" autocomplete="off">
+                    <div id="lightsaberFormsMeta" class="inventoryMeta muted"></div>
+                  </div>
+                  <div id="ownedLightsaberFormsList" class="library"></div>
+                </div>
+              </div>
+              <div id="inventoryManager" class="managerPane" hidden role="tabpanel" aria-labelledby="inventoryTab">
+                <div class="managerGroup">
+                  <div class="managerTools row wrap">
+                    <button type="button" id="openItemCatalog" aria-haspopup="dialog">Add item</button>
+                    <div id="inventoryMeta" class="inventoryMeta muted"></div>
+                  </div>
+                  <div id="carriedItemList" class="library"></div>
+                </div>
+              </div>
+              <div id="featManager" class="managerPane" hidden role="tabpanel" aria-labelledby="featTab">
+                <div class="managerGroup">
+                  <div class="managerTools"><button type="button" id="openFeatCatalog" aria-haspopup="dialog">Add feat</button></div>
+                  <div id="ownedFeatList" class="library"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
+      </section>
+      </div>
+      <dialog id="restDialog" class="sheetDialog" aria-labelledby="restTitle">
+        <header class="top dialogHeader">
+          <h2 id="restTitle" tabindex="-1"></h2>
+          <button type="button" id="closeRest" class="dialogClose" aria-label="Close rest dialog">×</button>
+        </header>
+        <div class="dialogBody restBody">
+          <label class="row" id="restProvisionsField" hidden><input type="checkbox" id="restProvisions"> Had food and drink</label>
+          <label class="row" id="restForceRecoveryField" hidden><input type="checkbox" id="restForceRecovery"><span id="restForceRecoveryLabel">Use Force Recovery</span></label>
+          <ul id="restSummary" class="restSummary" aria-label="Recovery preview"></ul>
+          <p id="restNoRecovery" class="muted" hidden>HP and tracked resources are already full.</p>
+          <section id="shortRestHealing" aria-labelledby="hitDiceTitle" hidden>
+            <div class="top wrap">
+              <h3 id="hitDiceTitle">Hit Dice</h3>
+              <span id="restDiceRemaining" class="muted"></span>
+            </div>
+            <p id="restHealingPreview" role="status"></p>
+            <div id="hitDiceControls" class="modalFormFields">
+              <div class="row wrap">
+                <button type="button" id="rollHitDie"></button>
+                <span class="muted">or tap physical die roll:</span>
+              </div>
+              <div id="hitDieChips" class="hitDieChips" role="group" aria-label="Physical Hit Die roll"></div>
+            </div>
+            <ol id="restHitDieRolls" class="restRolls" hidden></ol>
+            <button type="button" id="removeRestHitDie" hidden>Remove last die</button>
+          </section>
+        </div>
+        <footer class="row wrap dialogFooter restFooter">
+          <button type="button" id="cancelRest">Cancel</button>
+          <button type="button" id="takeRest" class="restPrimary"></button>
+        </footer>
+      </dialog>
+      <dialog id="optionCatalog" class="sheetDialog" aria-labelledby="optionCatalogTitle">
+        <header class="top dialogHeader">
+          <h2 id="optionCatalogTitle">Library</h2>
+          <button type="button" id="closeOptionCatalog" autofocus>Done</button>
+        </header>
+        <div id="optionCatalogResults" class="dialogBody">
+          <div class="filters catalogFilters">
+            <input type="search" id="optionSearch" placeholder="Search library" aria-label="Search library" autocomplete="off">
+            <select id="optionTypeFilter" aria-label="Maneuver type" hidden>
+              <option value="">All types</option>
+              <option value="General">General</option>
+              <option value="Physical">Physical</option>
+              <option value="Mental">Mental</option>
+            </select>
+          </div>
+          <div id="optionCatalogList" class="library"></div>
+        </div>
+        <footer class="dialogFooter catalogFooter">
+          <div class="row wrap">
+            <p id="optionPageStatus" class="muted" role="status"></p>
+            <nav id="optionPages" class="row" aria-label="Library pages" hidden>
+              <button type="button" id="previousOptionPage">Previous</button>
+              <button type="button" id="nextOptionPage">Next</button>
+            </nav>
+          </div>
+        </footer>
+      </dialog>
+      <dialog id="powerCatalog" class="sheetDialog" aria-labelledby="powerCatalogTitle">
+        <header class="top dialogHeader">
+          <h2 id="powerCatalogTitle">Power library</h2>
+          <button type="button" id="closePowerCatalog" autofocus>Done</button>
+        </header>
+        <div id="powerCatalogResults" class="dialogBody">
+          <div class="filters catalogFilters">
+            <input type="search" id="powerSearch" placeholder="Search powers" aria-label="Search powers" autocomplete="off">
+<div id="powerLevelChips" class="pickerChips" role="group" aria-label="Filter by power level"></div>
+          </div>
+          <div id="powerCatalogList" class="library"></div>
+        </div>
+        <footer class="dialogFooter catalogFooter">
+          <div class="row wrap">
+            <p id="powerPageStatus" class="muted" role="status"></p>
+            <nav id="powerPages" class="row" aria-label="Power library pages" hidden>
+              <button type="button" id="previousPowerPage">Previous</button>
+              <button type="button" id="nextPowerPage">Next</button>
+            </nav>
+          </div>
+        </footer>
+      </dialog>
+      <dialog id="featCatalog" class="sheetDialog" aria-labelledby="featCatalogTitle">
+        <header class="top dialogHeader">
+          <h2 id="featCatalogTitle">Add feat</h2>
+          <button type="button" id="closeFeatCatalog" autofocus>Done</button>
+        </header>
+        <div id="featCatalogResults" class="dialogBody">
+          <div class="filters catalogFilters">
+            <input type="search" id="featSearch" placeholder="Search feats" aria-label="Search feats" autocomplete="off">
+            <select id="featCategory" aria-label="Feat category"><option value="">All categories</option></select>
+            <select id="featSort" aria-label="Sort feats">
+              <option value="name">Name A–Z</option>
+              <option value="name-desc">Name Z–A</option>
+              <option value="category">Category, then name</option>
+              <option value="level">Required level</option>
+            </select>
+          </div>
+          <div id="featCatalogList" class="library"></div>
+        </div>
+        <footer class="dialogFooter catalogFooter">
+          <div class="row wrap">
+            <p id="featPageStatus" class="muted" role="status"></p>
+            <nav id="featPages" class="row" aria-label="Feat catalog pages" hidden>
+              <button type="button" id="previousFeatPage">Previous</button>
+              <button type="button" id="nextFeatPage">Next</button>
+            </nav>
+          </div>
+          <div class="row" id="featCatalogFeedback" hidden>
+            <p class="muted" id="featCatalogNotice" role="status"></p>
+            <button type="button" id="featCatalogUndo">Undo</button>
+          </div>
+        </footer>
+      </dialog>
+      <dialog id="itemCatalog" class="sheetDialog" aria-labelledby="itemCatalogTitle">
+        <header class="top dialogHeader">
+          <h2 id="itemCatalogTitle">Add item</h2>
+          <button type="button" id="closeItemCatalog" autofocus>Done</button>
+        </header>
+        <div id="itemCatalogResults" class="dialogBody">
+          <div class="filters catalogFilters">
+            <input type="search" id="itemSearch" placeholder="Search items" aria-label="Search items" autocomplete="off">
+            <div id="itemCategoryChips" class="pickerChips" role="group" aria-label="Filter by item category"></div>
+            <select id="itemSort" aria-label="Sort items">
+              <option value="name">Name A–Z</option>
+              <option value="name-desc">Name Z–A</option>
+              <option value="category">Category</option>
+              <option value="price-asc">Price (lowest first)</option>
+              <option value="price-desc">Price (highest first)</option>
+              <option value="weight">Weight (lightest first)</option>
+              <option value="owned">Owned first</option>
+            </select>
+          </div>
+          <div id="itemCatalogList" class="library"></div>
+        </div>
+        <footer class="dialogFooter catalogFooter">
+          <div class="row wrap">
+            <p id="itemPageStatus" class="muted" role="status"></p>
+            <nav id="itemPages" class="row" aria-label="Item catalog pages" hidden>
+              <button type="button" id="previousItemPage">Previous</button>
+              <button type="button" id="nextItemPage">Next</button>
+            </nav>
+          </div>
+          <div class="row" id="catalogFeedback" hidden>
+            <p class="muted" id="catalogNotice" role="status"></p>
+            <button type="button" id="catalogUndo">Undo</button>
+          </div>
+        </footer>
+      </dialog>
+      <dialog id="infoModal" class="sheetDialog" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+        <header class="top dialogHeader"><h2 id="infoTitle"></h2><button type="button" id="closeInfo" class="dialogClose" aria-label="Close details" autofocus>×</button></header>
+        <div id="infoBody" class="dialogBody modalBody"></div>
+      </dialog>
+      <dialog id="conditionEditor" class="sheetDialog" aria-labelledby="pickerTitle">
+        <form id="conditionForm">
+          <header class="top dialogHeader"><h2 id="pickerTitle">Add effect</h2><button type="button" id="closeEffects" class="dialogClose" aria-label="Close effects">×</button></header>
+          <div class="dialogBody effectFields">
+            <label>Find an effect<input id="effectSearch" type="search" placeholder="Search conditions & effects" autocomplete="off"></label>
+            <div><span class="muted">Category</span><div id="effectGroupChips" class="pickerChips" style="margin-top:4px"></div></div>
+            <div id="conditionChoices"></div>
+            <p id="conditionPreview" class="infoRules" aria-live="polite"></p>
+            <label id="customNameField" hidden>Effect name<input id="customName" maxlength="120"></label>
+            <label id="conditionValueField" hidden><span id="conditionValueLabel"></span><input id="conditionValue" type="number" min="1" value="1"></label>
+            <label id="conditionContextField" class="row" hidden><input id="conditionContext" type="checkbox"><span id="conditionContextLabel"></span></label>
+            <div id="conditionChoiceField" hidden><span id="conditionChoiceLabel" class="muted"></span><div id="conditionChoicePills" class="row wrap" style="margin-top:6px"></div></div>
+            <label>Note (optional)<input id="conditionNote" maxlength="240" placeholder="Source, DC, or duration"></label>
+          </div>
+          <footer class="dialogFooter"><button id="applyCondition" disabled>Apply effect</button></footer>
+        </form>
+      </dialog>
+      <dialog id="castDialog" class="sheetDialog" aria-labelledby="castTitle">
+        <header class="top dialogHeader">
+          <div class="row">
+            <button type="button" id="castBack" hidden>Back</button>
+            <h2 id="castTitle" tabindex="-1">Cast a power</h2>
+          </div>
+          <button type="button" id="castClose" class="dialogClose" aria-label="Close power chooser">×</button>
+        </header>
+        <div id="castBody" class="dialogBody"></div>
+      </dialog>
+      <dialog id="importDialog" class="sheetDialog" aria-labelledby="importTitle">
+        <form id="importForm">
+          <header class="top dialogHeader"><h2 id="importTitle">Review character import</h2><button type="button" id="closeImport" class="dialogClose" aria-label="Close import review">×</button></header>
+          <div class="dialogBody importReview" id="importReview"></div>
+          <footer class="row wrap dialogFooter restFooter"><button type="button" id="cancelImport">Cancel</button><button id="confirmImport" class="restPrimary">Import character</button></footer>
+        </form>
+      </dialog>
+      <aside id="feedback" hidden="">
+        <div id="notice" class="notice" role="status" aria-live="polite" aria-atomic="true"></div>
+        <button id="feedbackUndo">Undo</button>
+        <button id="dismissFeedback" aria-label="Dismiss message">Dismiss</button>
+      </aside>
+    </main>
+    <script src="application/document.js"></script>
+    <script src="catalogs/classes.js"></script>
+    <script src="catalogs/class-options.js"></script>
+    <script src="catalogs/archetypes.js"></script>
+    <script src="catalogs/species.js"></script>
+    <script src="catalogs/backgrounds.js"></script>
+    <script src="catalogs/powers.js"></script>
+    <script src="catalogs/combat-options.js"></script>
+    <script src="catalogs/equipment.js"></script>
+    <script src="catalogs/properties.js"></script>
+    <script src="catalogs/feats.js"></script>
+    <script src="catalogs/conditions.js"></script>
+    <script src="application/symbols.js"></script>
+    <script src="application/rules.js"></script>
+    <script src="application/conditions.js"></script>
+    <script src="application/consumables.js"></script>
+    <script src="application/casting.js"></script>
+    <script src="application/combat-options.js"></script>
+    <script src="application/importers/sw5e-website.js"></script>
+    <script src="application/state.js"></script>
+    <script src="application/active-effects.js"></script>
+    <script src="application/dashboard.js"></script>
+    <script src="application/skills.js"></script>
+    <script src="application/combat.js"></script>
+    <script src="application/collections.js"></script>
+    <script src="application/rests.js"></script>
+    <script src="application/import-dialog.js"></script>
+    <script src="application/viewer.js"></script>
+    <script src="pwa.js"></script>
+  </body></html>

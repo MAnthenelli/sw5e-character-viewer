@@ -1,0 +1,30 @@
+{
+  "name": "SW5e Character Viewer",
+  "short_name": "SW5e Viewer",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "theme_color": "#111619",
+  "background_color": "#111619",
+  "icons": [
+    {
+      "src": "./icons/sw5e-d20-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/sw5e-d20-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/sw5e-d20-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

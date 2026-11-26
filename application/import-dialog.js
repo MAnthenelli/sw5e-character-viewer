@@ -26,23 +26,45 @@ function renderImport(draft) {
       appendText(root, "p", "Replacing the current sheet loads the state from this export.");
     }
   }
-  appendText(root, "h3", profile.name + " · Level " + profile.level + " " + profile.species + " " + profile.className);
-  appendText(root, "p", profile.filename + " · SW5e builder " + profile.version).className = "muted";
-  appendText(root, "p", session.hp + "/" + hitPointMaximum(profile, session) + " HP" +
-    (session.temp ? " + " + session.temp + " temporary HP" + (session.tempSource ? " · " + session.tempSource : "") : ""));
-  const spHp = speciesHpBonus(profile, session);
-  if (spHp) {
-    appendText(root, "p", signed(spHp) + " maximum HP from " + profile.species + " trait").className = "muted";
-  }
-  if (profile.extraHpBonus) {
-    appendText(root, "p", signed(profile.extraHpBonus) + " extra maximum HP adjustment from export").className = "muted";
-  }
+  const previewApproaches = {...(session.approaches || {}), ...(draft.suggestedApproaches || {})};
+  const previewSessionForPowers = {...session, approach: draft.suggestedApproach || session.approach, approaches: previewApproaches};
+  const csPreview = typeof castingStats === "function" ? castingStats(profile, previewSessionForPowers) : null;
+  const fmtPowerCap = (used, cap, bonus, label) => {
+    if (cap > 0) {
+      const bonusTxt = bonus > 0 ? " (+" + bonus + " bonus)" : "";
+      const diffTxt = used < cap ? " — add " + (cap - used) : (used > cap ? " — remove " + (used - cap) : "");
+      return used + "/" + cap + " " + label + bonusTxt + diffTxt;
+    }
+    return used + bonus > 0 ? (used + bonus) + " " + label : "";
+  };
+  const powerFactParts = csPreview
+    ? [
+        fmtPowerCap(csPreview.forceKnownUsed || 0, csPreview.forceKnownCap || 0, csPreview.forceBonusKnown || 0, "Force"),
+        fmtPowerCap(csPreview.techKnownUsed || 0, csPreview.techKnownCap || 0, csPreview.techBonusKnown || 0, "Tech")
+      ].filter(Boolean)
+    : [];
   const selections = session.feats.map(feat => feat.name);
-  if (selections.length) appendText(root, "p", "Feats: " + selections.join(" · ")).className = "muted";
-  const forceCount = (profile.forcePowers?.length || 0) + (profile.customForcePowers?.length || 0);
-  const techCount = (profile.techPowers?.length || 0) + (profile.customTechPowers?.length || 0);
-  if (forceCount) appendText(root, "p", forceCount + " Force power" + (forceCount === 1 ? "" : "s") + " imported").className = "muted";
-  if (techCount) appendText(root, "p", techCount + " Tech power" + (techCount === 1 ? "" : "s") + " imported").className = "muted";
+  const hpText = session.hp + " / " + hitPointMaximum(profile, session) + " HP" +
+    (session.temp ? " (+" + session.temp + " temp)" : "");
+  const facts = [
+    ["Character", profile.name],
+    ["Class", Array.isArray(profile.classes) && profile.classes.length > 1
+      ? profile.classes.map(c => c.name + " " + c.levels).join(" / ") + " (Level " + profile.level + ")"
+      : ("Level " + profile.level + " " + profile.className)],
+    ["Species", profile.species],
+    ["Hit Points", hpText],
+    ["Powers", powerFactParts.join(" · ") || "None"],
+    ["Export", profile.filename + " (v" + profile.version + ")"],
+    ["Feats", selections.length ? selections.join(" · ") : ""]
+  ].filter(([, v]) => Boolean(v));
+  const dl = appendText(root, "dl", "");
+  dl.className = "infoFacts";
+  for (const [k, v] of facts) {
+    const pair = appendText(dl, "div", "");
+    if (k === "Feats" || String(v).length > 34) pair.className = "is-wide";
+    appendText(pair, "dt", k);
+    appendText(pair, "dd", v);
+  }
   if (profile.maneuvers?.length) appendText(root, "p", profile.maneuvers.length + " maneuver" + (profile.maneuvers.length === 1 ? "" : "s") + " imported").className = "muted";
   if (profile.dewback?.length) appendText(root, "p", "Dewback’s Instinct: " + profile.dewback.join(", ")).className = "muted";
   if (session.temp > 0) {
@@ -56,8 +78,13 @@ function renderImport(draft) {
     srcWrap.append(srcInput);
   }
   let approach;
-  if (draft.suggestedApproach) {
-    approach = importCheckbox(root, "approach", "Use " + draft.suggestedApproach + " (detected from custom features)");
+  const suggestedArchEntries = Object.entries(draft.suggestedApproaches || {}).filter(([, v]) => Boolean(v));
+  if (suggestedArchEntries.length > 1) {
+    const summary = suggestedArchEntries.map(([c, a]) => a + " (" + c + ")").join(", ");
+    approach = importCheckbox(root, "approach", "Use " + summary + " (detected archetypes)");
+  } else if (draft.suggestedApproach || suggestedArchEntries.length === 1) {
+    const labelArch = draft.suggestedApproach || suggestedArchEntries[0][1];
+    approach = importCheckbox(root, "approach", "Use " + labelArch + " (detected from custom features)");
   }
   if (Object.keys(draft.suggestions || {}).length) {
     const group = appendText(root, "fieldset", "");
@@ -66,6 +93,24 @@ function renderImport(draft) {
     for (const [key, value] of Object.entries(draft.suggestions)) {
       const carry = importCheckbox(group, key, (labels[key] || key) + " · " + value + " use" + (value === 1 ? "" : "s") + " spent");
       if (key === "frenzy" && approach) approach.addEventListener("change", () => { carry.disabled = !approach.checked; });
+    }
+  }
+  if (typeof auditCharacterCompleteness === "function") {
+    const previewSession = {...session, approach: draft.suggestedApproach || session.approach, approaches: previewApproaches};
+    const auditItems = auditCharacterCompleteness(profile, previewSession, {suggestedApproach: draft.suggestedApproach})
+      .filter(it => it.severity !== "info");
+    if (auditItems.length) {
+      const box = appendText(root, "div", "");
+      box.className = "importAuditPreview";
+      appendText(box, "strong", "Missing features & choices (" + auditItems.length + ")");
+      const ul = appendText(box, "ul", "");
+      for (const it of auditItems.slice(0, 6)) {
+        appendText(ul, "li", it.title);
+      }
+      if (auditItems.length > 6) {
+        appendText(ul, "li", "…and " + (auditItems.length - 6) + " more");
+      }
+      appendText(box, "p", "You can populate these right after importing.").className = "muted";
     }
   }
   for (const warning of profile.warnings || []) appendText(root, "p", warning).className = "importWarning";
@@ -112,8 +157,16 @@ function wireImportDialog() {
     const choices = Object.fromEntries(new FormData(event.target));
     const replacing = Boolean(app.character);
     importDialog.close();
-    transact((replacing ? "Replaced character with " : "Imported ") + importDraft.character.profile.name,
-      () => confirmWebsiteImport(importDraft, choices));
-    getElementById("characterName").focus();
+    const imported = confirmWebsiteImport(importDraft, choices);
+    transact((replacing ? "Replaced character with " : "Imported ") + imported.profile.name,
+      () => imported);
+    const pendingAudit = typeof auditCharacterCompleteness === "function"
+      ? auditCharacterCompleteness(app.character.profile, app.character.session).filter(it => it.severity !== "info")
+      : [];
+    if (pendingAudit.length && typeof openCharacterAuditModal === "function") {
+      openCharacterAuditModal(getElementById("setupAuditBtn") || getElementById("characterName"));
+    } else {
+      getElementById("characterName").focus();
+    }
   });
 }

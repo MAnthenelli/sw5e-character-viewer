@@ -1,46 +1,82 @@
 :root {
   color-scheme: dark;
-  --bg: #111619;
-  --panel: #1a2327;
-  --surface: #141c20;
-  --control: #243138;
-  --line: #34444b;
-  --edge: #6f868e;
-  --text: #f0f5f3;
-  --muted: #a6b7b3;
-  --gold: #e4c26d;
-  --blue: #7ec4f4;
-  --green: #7ad4a5;
-  --red: #ff948b;
-  --track: #2d393f;
+  --bg: #0d1217;
+  --panel: #141c23;
+  --surface: #19232c;
+  --hover: #1e2a35;
+  --control: #212f3b;
+  --control-hover: #2a3b49;
+  --line: #2f4151;
+  --edge: #4d6477;
+  --fs-xs: 12px;
+  --fs-sm: 13px;
+  --fs-base: 14.5px;
+  --fs-md: 16px;
+  --fs-lg: 20px;
+  --fs-xl: 24px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-pill: 999px;
+  --text: #f0f5f8;
+  --muted: #93a9b8;
+  --gold: #eab95c;
+  --gold-soft: color-mix(in srgb, var(--gold) 13%, transparent);
+  --blue: #76c1f8;
+  --blue-soft: color-mix(in srgb, var(--blue) 13%, transparent);
+  --green: #6ad7a2;
+  --green-soft: color-mix(in srgb, var(--green) 13%, transparent);
+  --red: #ff8e84;
+  --red-soft: color-mix(in srgb, var(--red) 13%, transparent);
+  --track: #24323e;
   --mana-force: #2b8be6;
   --mana-force-temp: #67c7f9;
   --mana-force-text: #8cd0ff;
   --mana-tech: #14b8a6;
   --mana-tech-temp: #5eead4;
   --mana-tech-text: #5eead4;
+  --mana-focus: #a855f7;
+  --mana-focus-text: #d8b4fe;
+  --shadow-sm: rgba(0, 0, 0, .38);
+  --shadow-md: rgba(0, 0, 0, .45);
+  --shadow-lg: rgba(0, 0, 0, .58);
+  --shadow-xl: rgba(0, 0, 0, .65);
+  --backdrop: rgba(0, 0, 0, .65);
 }
 .light {
   color-scheme: light;
-  --bg: #f1f5f4;
+  --bg: #eef2f5;
   --panel: #ffffff;
-  --surface: #f6f9f8;
-  --control: #e7efed;
-  --line: #c6d1ce;
-  --edge: #6b7d78;
-  --text: #14201f;
-  --muted: #4b5d59;
-  --gold: #785500;
-  --blue: #0e5a8a;
-  --green: #116245;
-  --red: #a92824;
-  --track: #d6e0dd;
+  --surface: #f5f8fa;
+  --hover: #edf3f7;
+  --control: #e8eff4;
+  --control-hover: #dce6ee;
+  --line: #d4dfe7;
+  --edge: #7b91a0;
+  --text: #132029;
+  --muted: #4d6270;
+  --gold: #8a5e00;
+  --gold-soft: color-mix(in srgb, var(--gold) 10%, transparent);
+  --blue: #0c5f96;
+  --blue-soft: color-mix(in srgb, var(--blue) 10%, transparent);
+  --green: #0f6b4a;
+  --green-soft: color-mix(in srgb, var(--green) 10%, transparent);
+  --red: #b42622;
+  --red-soft: color-mix(in srgb, var(--red) 9%, transparent);
+  --track: #d5e0e7;
   --mana-force: #0284c7;
   --mana-force-temp: #38bdf8;
   --mana-force-text: #0369a1;
   --mana-tech: #0d9488;
   --mana-tech-temp: #2dd4bf;
   --mana-tech-text: #0f766e;
+  --mana-focus: #7e22ce;
+  --mana-focus-text: #6b21a8;
+  --shadow-sm: rgba(15, 23, 42, .14);
+  --shadow-md: rgba(15, 23, 42, .18);
+  --shadow-lg: rgba(15, 23, 42, .22);
+  --shadow-xl: rgba(15, 23, 42, .28);
+  --backdrop: rgba(15, 23, 42, .45);
 }
 
 * { box-sizing: border-box }
@@ -48,38 +84,54 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--text);
-  font: .9375rem/1.45 system-ui, -apple-system, sans-serif;
+  font: var(--fs-base)/1.48 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
 }
-main { width: min(100%, 1180px); margin: auto; padding: 18px 16px 80px }
+main { width: min(100%, 1190px); margin: auto; padding: 20px 18px 84px }
 h1, h2, h3, h4, p { margin: 0 }
-h1 { font-size: 1.5rem; line-height: 1.2 }
-h2 { font-size: 1.125rem; line-height: 1.3 }
-h3, .actionColumn > b { font-size: .9375rem; font-weight: 650 }
-small, .muted, .defenses { font-size: .8125rem; color: var(--muted) }
+h1 { font-size: var(--fs-lg); font-weight: 750; line-height: 1.2; letter-spacing: -.015em }
+h2 { font-size: var(--fs-md); line-height: 1.3; letter-spacing: -.01em }
+h3, .actionColumn > b { font-size: var(--fs-base); font-weight: 650 }
+small, .muted, .defenses { font-size: var(--fs-sm); color: var(--muted) }
 
 button, input, select { font: inherit; color: var(--text); max-width: 100%; min-width: 0 }
 button, select, input:not([type=checkbox]) {
   border: 1px solid var(--edge);
-  border-radius: 6px;
+  border-radius: 7px;
   background: var(--control);
-  padding: 5px 9px;
+  padding: 5px 10px;
   min-height: 34px;
+  transition: background-color .13s ease, border-color .13s ease, color .13s ease;
 }
+input:not([type=checkbox]), select {
+  background: var(--surface);
+  border-color: var(--line);
+}
+input:not([type=checkbox]):focus, select:focus { border-color: var(--blue) }
 button, summary { cursor: pointer }
 button { font-weight: 600 }
-button:not(:disabled):hover, summary:hover { color: var(--blue) }
-button[aria-pressed=true]:hover, button.active:hover { color: var(--bg) }
-button:disabled { opacity: .5; cursor: default }
+button:not(:disabled):hover {
+  background: var(--control-hover);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+summary:hover { color: var(--blue) }
+button[aria-pressed=true]:hover, button.active:hover, .restPrimary:enabled:hover {
+  background: color-mix(in srgb, var(--gold) 88%, white);
+  border-color: var(--gold);
+  color: var(--bg);
+}
+button:disabled { opacity: .48; cursor: default }
 button.active, [aria-pressed=true], #applyCondition:enabled {
   background: var(--gold);
   color: var(--bg);
   border-color: var(--gold);
 }
-:focus-visible { outline: 3px solid var(--blue); outline-offset: 2px }
+:focus-visible { outline: 2.5px solid var(--blue); outline-offset: 2px }
 #characterName:focus { outline: none }
 [hidden], .hidden { display: none !important }
-summary { font-weight: 600; padding-block: 4px }
+summary { font-weight: 650; padding-block: 4px }
 .srOnly {
   position: absolute; width: 1px; height: 1px; padding: 0;
   overflow: hidden; clip-path: inset(50%); white-space: nowrap;
@@ -90,73 +142,88 @@ summary { font-weight: 600; padding-block: 4px }
 .row, .top, .counter, .segmented, .restRow, .effectsToolbar { display: flex; align-items: center; gap: 8px }
 .top, .counter, .effectsToolbar { justify-content: space-between }
 .wrap, .segmented, .counter { flex-wrap: wrap }
-main > .top { margin-bottom: 12px }
+main > .top { margin-bottom: 14px }
 .panel {
-  padding: 16px;
-  border-radius: 12px;
+  padding: 18px 20px;
+  border-radius: 13px;
   background: var(--panel);
   border: 1px solid var(--line);
   min-width: 0;
 }
 
-/* Header Sheet Menu */
+/* Header Setup Badge & Sheet Menu */
+.setupAuditBtn, .needsChoiceBtn {
+  border-color: var(--gold);
+  background: var(--gold-soft);
+  color: var(--gold);
+  font-weight: 650;
+}
+.setupAuditBtn:hover, .needsChoiceBtn:hover {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+}
+
 .sheetMenuWrap { position: relative }
 .sheetMenuBtn { display: inline-flex; align-items: center; gap: 6px }
 .sheetMenuPanel {
   position: absolute; right: 0; top: calc(100% + 6px); z-index: 30;
-  min-width: 210px;
+  min-width: 224px;
   display: grid; gap: 4px;
   padding: 6px;
   background: var(--panel);
   border: 1px solid var(--edge);
   border-radius: 10px;
-  box-shadow: 0 8px 24px #0006;
+  box-shadow: 0 12px 30px var(--shadow-md);
 }
 .sheetMenuPanel button {
   width: 100%; justify-content: space-between; display: flex; align-items: center;
   text-align: left; border-color: transparent; background: transparent;
 }
-.sheetMenuPanel button:not(:disabled):hover { background: var(--control) }
+.sheetMenuPanel button:not(:disabled):hover { background: var(--control); border-color: transparent }
 .themeToggle span { display: inline-block; min-width: 3ch; margin-inline-start: .25rem; color: var(--muted) }
 
-/* Dashboard: Top 6 Stat Tiles, Defenses, Health, Saves, Effects */
-.dashboardGrid { display: grid; grid-template-columns: minmax(0, 1.38fr) minmax(0, 1fr); align-items: start; gap: 16px }
-.dashboardFormHead { display: flex; align-items: center; gap: 8px }
-#formTitle { font-size: 1.3125rem }
+/* Dashboard: Clean Editorial Stat Strip (no box-soup), Defenses, Health, Flat Saves, Effects */
+.dashboardGrid { display: grid; grid-template-columns: minmax(0, 1.42fr) minmax(0, 1fr); align-items: start; gap: 20px }
+.dashboardFormHead { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px }
+#formTitle { font-size: var(--fs-lg); font-weight: 750 }
 #formRole { margin-bottom: 2px }
 
 .formStats {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 8px;
-  margin: 10px 0 0;
-  align-items: stretch;
+  gap: 10px;
+  margin: 12px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  align-items: start;
 }
 .formStats > div {
-  border-top: 1px solid var(--line);
-  padding: 6px 4px 4px;
   min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 3px;
+  gap: 2px;
 }
 .formStats dt {
   color: var(--muted);
-  font-size: .75rem;
-  line-height: 1.2;
+  font-size: var(--fs-xs);
+  font-weight: 650;
+  letter-spacing: .025em;
+  text-transform: uppercase;
+  line-height: 1.25;
   white-space: normal;
 }
 .formStats dd {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 650;
+  font-size: var(--fs-md);
+  font-weight: 750;
   line-height: 1.25;
 }
 .formStats .statSub {
   display: block;
   margin-top: 2px;
-  font-size: .75rem;
+  font-size: var(--fs-xs);
   font-weight: 450;
   color: var(--muted);
   line-height: 1.25;
@@ -164,67 +231,107 @@ main > .top { margin-bottom: 12px }
 .formStats .detailName, .saveGrid .detailName, #defense .detailName { min-height: 24px; padding: 0 }
 
 /* Semantic Defenses Pills */
-#defense { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 10px 0 0 }
+#defense { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 12px 0 0 }
 .defenseFact {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 8px;
+  padding: 2px 9px;
   border: 1px solid var(--line);
-  border-radius: 6px;
+  border-radius: 999px;
   background: var(--surface);
   color: var(--text);
-  font-size: .8125rem;
+  font-size: var(--fs-xs);
+  font-weight: 550;
   line-height: 1.35;
 }
-.defenseFact.is-concentration { border-color: var(--blue); color: var(--blue); font-weight: 600 }
-.defenseFact.is-vulnerability { border-color: var(--red); color: var(--red); font-weight: 600 }
-.defenseFact.is-resistance, .defenseFact.is-immunity { border-color: var(--green); color: var(--text) }
-.defenseFact.is-senses { color: var(--muted) }
-.defenseFact.is-bonus { border-color: var(--gold); color: var(--text) }
+.defenseFact.is-concentration { border-color: var(--gold); background: var(--gold-soft); color: var(--gold); font-weight: 650 }
+.defenseFact.is-vulnerability { border-color: var(--red); background: var(--red-soft); color: var(--red); font-weight: 650 }
+.defenseFact.is-resistance, .defenseFact.is-immunity { border-color: var(--green); background: var(--green-soft); color: var(--text) }
+.defenseFact.is-senses { border-color: var(--line); background: var(--surface); color: var(--text) }
+.defenseFact.is-bonus { border-color: var(--blue); background: var(--blue-soft); color: var(--text) }
+button.defenseFact { cursor: pointer; font: inherit; font-size: var(--fs-sm); transition: filter 0.12s ease, transform 0.1s ease }
+button.defenseFact:hover { filter: brightness(1.08) }
+button.defenseFact:active { transform: translateY(1px) }
+.mathPopoverActions { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--line); gap: 6px }
+.hpReadoutBtn { padding: 0; background: transparent; border-color: transparent; font: inherit; color: inherit; cursor: pointer }
+.hpReadoutBtn:hover { text-decoration: underline; text-underline-offset: 3px }
+.resourceRecharge { margin-left: 6px; font-size: var(--fs-xs); font-weight: 600; color: var(--muted); letter-spacing: 0.03em }
+.dashMetaStrip { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-top: 2px; font-size: var(--fs-sm)}
+.dashMetaBtn { padding: 1px 6px; font-size: var(--fs-sm); font-weight: 600; background: transparent; border: 1px solid var(--line); border-radius: 6px; color: var(--text); cursor: pointer }
+.dashMetaBtn:hover { background: var(--control); border-color: var(--blue) }
+.inspirationBtn[aria-pressed="true"] { border-color: var(--gold); background: var(--gold-soft); color: var(--text) }
+.menuSub { display: block; font-size: var(--fs-xs); font-weight: 400; color: var(--muted); margin-top: 2px; line-height: 1.3 }
+.skillLegend { font-size: var(--fs-xs); margin-left: auto }
+.stickyMetric { font-weight: 700 }
+@media (max-width: 680px) {
+  button.defenseFact, .dashMetaBtn, .swWeaponToggle { min-height: 36px; padding: 5px 10px }
+}
 
 /* Health Bar & Controls */
-.dashboardHealth { margin-top: 12px }
-.healthLine { display: grid; grid-template-columns: 118px minmax(0, 1fr); align-items: center; gap: 8px }
-.healthLine.tempLine { margin-top: 4px }
-.big { font-size: 1.4375rem; font-weight: 750 }
-.bar { height: 9px; border-radius: 10px; overflow: hidden; background: var(--track) }
-.bar i { height: 100%; display: block; background: var(--red); transition: width .18s ease }
+.dashboardHealth {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.healthLine { display: grid; grid-template-columns: 124px minmax(0, 1fr); align-items: center; gap: 10px }
+.healthLine.tempLine { margin-top: 5px }
+.big { font-size: var(--fs-xl); font-weight: 800; letter-spacing: -.02em }
+.bar { height: 10px; border-radius: 999px; overflow: hidden; background: var(--track) }
+.bar i { height: 100%; display: block; border-radius: 999px; background: var(--green); transition: width .18s ease, background-color .18s ease }
+.bar i.is-mid { background: var(--gold) }
+.bar i.is-low { background: var(--red) }
 .bar.temp { height: 5px }
 .bar.temp i { background: var(--gold) }
-.healthControls { margin-top: 8px }
-.healthControls button:is(.hpDamage, .hpHeal) { border-color: currentColor }
+.healthControls { margin-top: 10px }
+.healthControls button:is(.hpDamage, .hpHeal) { border-color: currentColor; background: transparent }
 .healthControls .hpDamage { color: var(--red) }
+.healthControls .hpDamage:hover { background: var(--red-soft); border-color: var(--red); color: var(--red) }
 .healthControls .hpHeal { color: var(--green) }
-.healthControls button:is(.hpDamage, .hpHeal):hover { text-decoration: underline }
-.hpAmount { display: inline-flex; align-items: center; gap: 6px }
-.hpAmount input { width: 4.2em }
-.tempCorrection { font-size: 13px; color: var(--muted) }
+.healthControls .hpHeal:hover { background: var(--green-soft); border-color: var(--green); color: var(--green) }
+.hpAmount { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-sm); color: var(--muted) }
+.hpAmount input { width: 4.2em; text-align: center; font-weight: 700; color: var(--text) }
+.tempCorrection { font-size: var(--fs-sm); color: var(--muted) }
 #tempSource:not(:empty)::before { content: " · " }
 .pillToggle[aria-pressed="true"] { background: var(--gold); color: var(--bg); border-color: var(--gold); font-weight: 650 }
 
-/* Balanced 3x2 Saving Throws Grid */
+/* Balanced 3x2 Saving Throws Grid — flat editorial rows with crisp proficiency accent */
+.dashboardSaves h2 {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
 .saveGrid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px 10px;
+  gap: 6px 12px;
   margin-top: 8px;
 }
-.stat { border-top: 1px solid var(--line); padding: 5px 0 3px; min-width: 0 }
-.stat small { display: block; font-size: 12px }
+.stat {
+  border-top: 1px solid var(--line);
+  padding: 6px 2px 4px 6px;
+  min-width: 0;
+  
+}
+.stat.is-proficient { color: var(--text) }
+.stat.is-expertise { color: var(--text) }
+.stat small { display: block; font-size: var(--fs-xs)}
 .dashboardSaves .stat button {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   white-space: nowrap;
-  font-size: .9375rem;
+  font-size: var(--fs-base);
+  text-decoration: none;
 }
+.dashboardSaves .stat button:hover { color: var(--blue); background: transparent }
 
 /* Active Effects */
 #activeStatus {
   margin-top: 12px;
   border-top: 1px solid var(--line);
-  padding-top: 10px;
+  padding-top: 11px;
   display: flex;
   gap: 8px;
   align-items: start;
@@ -232,73 +339,106 @@ main > .top { margin-bottom: 12px }
   scroll-margin-top: 90px;
 }
 .effectsToolbar { justify-content: start; gap: 8px }
+.effectsToolbar h3 {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
 .effectEntries, #conditionList, #effects { display: contents }
 .effectEntries details {
   min-width: 0; max-width: 100%;
   border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 0 8px;
-  overflow-wrap: anywhere;
+  border-radius: 7px;
+  background: var(--surface);
+  padding: 0 9px;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 .effectEntries summary { min-height: 32px; line-height: 24px }
 .effectEntries summary small { margin-left: 8px; font-weight: 400 }
-.effectEntries details[open] { flex-basis: min(100%, 32rem); padding-bottom: 8px }
+.effectEntries details[open] { flex-basis: min(100%, 32rem); padding-bottom: 10px }
 .effectEntries details > p { margin: 4px 0 8px }
 .effectEntries .entryNote { margin-inline-start: .45em; color: var(--muted); font-weight: 400 }
+.effectEntries .effectTrigger { margin: 6px 0 0; font-size: var(--fs-sm); color: var(--muted); line-height: 1.45 }
+.effectEntries .effectTrigger strong { color: var(--text); font-weight: 600 }
 #effects details > button + button, #conditionList details > button + button { margin-inline-start: .35rem }
 .conditionInstance { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; flex-wrap: wrap }
 .conditionInstance + .conditionInstance { border-top: 1px solid var(--line); padding-top: 6px }
 .exhaustionControl { display: flex; align-items: center; gap: 6px; margin: 6px 0; flex-wrap: wrap }
 
-/* Combat Layout: 4-zone Action Economy + Widened Resources Rail */
+/* Combat Layout: 4-zone Action Economy + Resources Rail (clean hairline lists, zero box-soup) */
 .combatLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 332px;
-  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) 334px;
+  gap: 14px;
   align-items: start;
-  margin-block: 12px;
+  margin-block: 14px;
 }
-.combatTabs { display: flex; gap: 6px; margin-block-end: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--line) }
-.combatTabs button { min-height: 40px; min-width: 84px }
+.combatTabs { display: flex; gap: 6px; margin-block-end: 14px; padding-bottom: 10px; border-bottom: 1px solid var(--line) }
+.combatTabs button { min-height: 38px; min-width: 86px }
 .combatTabs [aria-selected=true] { background: var(--gold); color: var(--bg); border-color: var(--gold) }
 .swordsIcon { font: 1.05em "Segoe UI Symbol", sans-serif }
 
-#action-economy .g3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px }
+#action-economy .g3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px }
 .actionColumn { min-width: 0 }
-.actionColumn > b { display: block; margin-bottom: 8px }
+.actionColumn > b, .freeTriggers > b {
+  display: block;
+  margin-bottom: 6px;
+  padding-bottom: 6px;
+  border-bottom: 2px solid var(--line);
+  font-size: var(--fs-xs);
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
 #actionRestriction:not(:empty) { display: block; margin-bottom: 8px }
-.conditionHint { display: block; color: var(--text); font-size: 13px; font-weight: 600 }
+.conditionHint { display: block; color: var(--gold); font-size: var(--fs-sm); font-weight: 600 }
 
-.swAction { padding: 7px 0; border-top: 1px solid var(--line) }
-.swAction small { display: block; margin-top: 3px; line-height: 1.4 }
-.swActionControls { justify-content: space-between; gap: 4px }
-.swWeaponToggle { font-size: .78rem; padding: 3px 8px; min-height: 28px }
-.freeTriggers { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line) }
-.freeTriggers > b { display: block; margin-bottom: 4px }
-.freeTriggersGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 18px }
-.badge { font-size: 12px; margin-left: 4px; color: var(--muted) }
+.swAction {
+  padding: 9px 4px;
+  border-top: 1px solid var(--line);
+  border-radius: 5px;
+  transition: background-color .12s ease;
+}
+.actionColumn > div > .swAction:first-child { border-top: 0 }
+.swAction:hover { background: var(--hover) }
+.swAction small { display: block; margin-top: 3px; line-height: 1.42 }
+.swActionControls { justify-content: space-between; gap: 5px }
+.swWeaponToggle { font-size: var(--fs-xs); padding: 2px 8px; min-height: 26px; border-radius: 999px }
+.freeTriggers { margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line) }
+.freeTriggersGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 20px }
+.freeTriggersGrid .swAction:nth-child(-n+2) { border-top: 0 }
+.badge { font-size: var(--fs-xs); margin-left: 4px; color: var(--muted) }
 
-/* Resources Panel: Mana Bars + Discrete Pips */
+/* Resources Panel: Mana Bars + Clean Flat Pip Rows */
+#resources > h2 {
+  font-size: var(--fs-xs);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
 #resourceRows { display: grid; gap: 10px; margin-top: 10px }
 .resourceManaBlock {
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 11px 12px;
+  border-radius: 9px;
   background: var(--surface);
   border: 1px solid var(--line);
   display: grid;
-  gap: 6px;
+  gap: 7px;
 }
-.resourceManaBlock.is-force { border-left: 3px solid var(--mana-force) }
-.resourceManaBlock.is-tech { border-left: 3px solid var(--mana-tech) }
+.resourceManaBlock.is-force { border-color: color-mix(in srgb, var(--mana-force) 42%, var(--line)); background: color-mix(in srgb, var(--mana-force) 6%, var(--surface)) }
+.resourceManaBlock.is-tech { border-color: color-mix(in srgb, var(--mana-tech) 42%, var(--line)); background: color-mix(in srgb, var(--mana-tech) 6%, var(--surface)) }
 .resourceManaHead {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
 }
-.resourceManaHead .resourceName { font-weight: 650 }
-.resourceManaBlock.is-force .resourceCount { color: var(--mana-force-text); font-weight: 700 }
-.resourceManaBlock.is-tech .resourceCount { color: var(--mana-tech-text); font-weight: 700 }
+.resourceManaHead .resourceName { font-weight: 700 }
+.resourceManaBlock.is-force .resourceCount { color: var(--mana-force-text); font-weight: 750 }
+.resourceManaBlock.is-tech .resourceCount { color: var(--mana-tech-text); font-weight: 750 }
 .manaBar { height: 10px; border-radius: 99px; overflow: hidden; background: var(--track) }
 .manaBar i { height: 100%; display: block; border-radius: 99px; transition: width .18s ease }
 .manaBar.is-force i { background: var(--mana-force) }
@@ -310,14 +450,14 @@ main > .top { margin-bottom: 12px }
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  font-size: .78rem;
+  font-size: var(--fs-xs);
   color: var(--muted);
 }
 .manaBar.is-temp { height: 5px }
 .manaBar.is-temp.is-force i { background: var(--mana-force-temp) }
 .manaBar.is-temp.is-tech i { background: var(--mana-tech-temp) }
 .resourceTempControls { display: inline-flex; gap: 4px }
-.resourceTempControls button { min-height: 24px; min-width: 26px; padding: 1px 6px; font-size: .75rem }
+.resourceTempControls button { min-height: 24px; min-width: 26px; padding: 1px 6px; font-size: var(--fs-xs)}
 
 .resourcePoolControls {
   display: grid;
@@ -328,7 +468,7 @@ main > .top { margin-bottom: 12px }
 .resourcePoolControls button {
   min-height: 32px;
   padding: 3px 6px;
-  font-size: .84rem;
+  font-size: var(--fs-sm);
 }
 
 .resourceRow {
@@ -336,7 +476,7 @@ main > .top { margin-bottom: 12px }
   grid-template-columns: minmax(0, 1fr) auto minmax(2.8em, auto);
   gap: 6px 8px;
   align-items: center;
-  padding-top: 6px;
+  padding-top: 8px;
   border-top: 1px solid var(--line);
 }
 #resourceRows > .resourceRow:first-child { border-top: 0; padding-top: 0 }
@@ -350,8 +490,8 @@ main > .top { margin-bottom: 12px }
   grid-column: 1 / -1;
   justify-content: flex-start;
 }
-.resourceName { overflow-wrap: anywhere }
-.resourceCount { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; font-size: .9375rem }
+.resourceName { overflow-wrap: break-word; word-break: normal; font-weight: 600 }
+.resourceCount { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; font-size: var(--fs-base); color: var(--muted) }
 .pips { display: flex; flex-wrap: wrap; gap: 3px; justify-content: flex-end }
 .pip {
   display: grid; place-items: center;
@@ -359,20 +499,23 @@ main > .top { margin-bottom: 12px }
   min-height: 24px;
   background: transparent; border: 0; padding: 0;
 }
+.pip:hover { background: transparent; border-color: transparent }
 .pip::before {
   content: ""; width: 18px; height: 18px;
   border: 1.5px solid var(--edge); border-radius: 50%; background: var(--control);
+  transition: transform .12s ease, background-color .14s ease;
 }
+.pip:hover::before { transform: scale(1.1) }
 .pip.on::before { background: var(--gold); border-color: var(--gold) }
 .pip.success.on::before { background: var(--green); border-color: var(--green) }
 .pip.failure.on::before { background: var(--red); border-color: var(--red) }
 
-.restRow { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line) }
+.restRow { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line) }
 .restRow button { flex: 1 }
 
-/* Skills Panel */
+/* Skills Panel — clean flat table-like rows */
 .skillPanel { min-width: 0 }
-.skillFilters { margin-block: 0 8px }
+.skillFilters { margin-block: 0 10px }
 .skillSearchField { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; flex: 1 1 10rem; min-width: 0 }
 .skillSearchField input { width: 100% }
 .searchIcon {
@@ -384,83 +527,105 @@ main > .top { margin-bottom: 12px }
   background: currentColor; transform: rotate(45deg); top: 8px; left: 7px;
 }
 .skillGroup + .skillGroup { margin-block-start: 12px }
-.skillGroup h3, #skillList > h3 { color: var(--muted); font-size: 13px; margin: 10px 0 4px }
+.skillGroup h3, #skillList > h3 { color: var(--muted); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .055em; margin: 10px 0 4px }
 #skillList > h3:first-child { margin-top: 0 }
-.skillGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr)); column-gap: 16px }
+.skillGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr)); column-gap: 18px }
 .skillGrid .skillCell {
   display: flex; justify-content: space-between; align-items: center; gap: 8px;
-  min-height: 40px; padding: 4px; border: 0; border-top: 1px solid var(--line);
-  border-radius: 0; background: transparent; text-align: start;
+  min-height: 40px; padding: 5px 6px;
+  border: 0; border-top: 1px solid var(--line); border-radius: 4px;
+  background: transparent; text-align: start;
 }
+.skillGrid .skillCell:hover { background: var(--hover); border-color: var(--line) }
 .skillCell > span { min-width: 0 }
-.skillCell b { flex: none; font-size: 1rem }
+.skillCell b { flex: none; font-size: var(--fs-md)}
 .skillAbility { font-weight: 400; margin-inline-start: .4em }
-.skillTraining { margin-inline-start: .4em; color: var(--gold); font-weight: 650 }
+.skillTraining { margin-inline-start: .4em; color: var(--gold); font-weight: 700 }
 
 /* Roll Badges & Inline Detail Triggers */
 .rollBadge {
   display: inline-grid; grid-template: 1fr / 1fr; place-items: center;
   width: 22px; height: 22px; margin-inline-start: 3px; vertical-align: middle;
-  font-size: 12px; font-weight: 750; color: var(--muted); line-height: 1;
+  font-size: var(--fs-xs); font-weight: 750; color: var(--muted); line-height: 1;
 }
 .rollBadge svg { grid-area: 1 / 1; width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 1.5 }
 .rollBadge > span[aria-hidden] { grid-area: 1 / 1 }
 .rollBadge[data-mode=A] { color: var(--green) }
 .rollBadge[data-mode=D] { color: var(--red) }
 
-.infoBtn { min-width: 34px; min-height: 34px; font-size: 16px; line-height: 1; background: transparent; border-color: transparent; color: var(--blue) }
+.infoBtn { min-width: 32px; min-height: 32px; font-size: var(--fs-md); line-height: 1; background: transparent; border-color: transparent; color: var(--blue) }
+.infoBtn:hover { background: var(--blue-soft); border-color: transparent }
 .detailName {
   min-height: 28px; padding: 0; border: 0; background: transparent;
   color: var(--text); font-weight: 700; text-align: start;
   text-decoration: underline dotted var(--edge); text-underline-offset: 3px;
 }
+.detailName:hover { background: transparent; border-color: transparent }
 
-/* Lightweight Non-Blocking Math Popover */
+/* Lightweight Non-Blocking Math Popover (unified with .infoFacts) */
 .mathPopover {
+  inset: auto;
   margin: 0;
-  padding: 12px 14px;
-  max-width: min(22rem, calc(100vw - 24px));
-  max-height: min(26rem, calc(100dvh - 24px));
+  padding: 14px 16px;
+  width: min(340px, calc(100vw - 24px));
+  max-width: min(340px, calc(100vw - 24px));
+  max-height: min(75vh, 520px);
+  overflow-y: auto;
+  max-height: min(82vh, 620px);
   overflow: auto;
   background: var(--panel);
   color: var(--text);
   border: 1px solid var(--edge);
-  border-radius: 10px;
-  box-shadow: 0 10px 28px #0007;
-  font-size: .875rem;
+  border-radius: 12px;
+  box-shadow: 0 14px 36px var(--shadow-lg);
+  font-size: var(--fs-base);
 }
 .mathPopover::backdrop { background: transparent }
-.mathPopoverHead { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px }
-.mathPopoverHead h3 { font-size: .95rem }
-.mathPopoverClose { min-width: 28px; min-height: 28px; padding: 0; border-color: transparent; background: transparent; font-size: 18px; line-height: 1 }
-.mathPopoverList { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 12px; margin: 0 }
-.mathPopoverList dt { color: var(--muted); font-size: .8125rem }
-.mathPopoverList dd { margin: 0; text-align: right; font-weight: 600 }
-.mathPopoverNote { margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--line); color: var(--muted); font-size: .8125rem }
+.mathPopoverHead { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 10px; margin-bottom: 12px; border-bottom: 1px solid var(--line) }
+.mathPopoverHead h3 { font-size: var(--fs-md); line-height: 1.25 }
+.mathPopoverClose {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  min-height: 30px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--control);
+  color: var(--muted);
+  font-size: var(--fs-md);
+  line-height: 1;
+}
+.mathPopoverClose:hover { color: var(--text); border-color: var(--edge) }
+.mathPopoverNote { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--line); color: var(--muted); font-size: var(--fs-sm); line-height: 1.45 }
 
 /* Grouped Character Binder */
 .binderLayout {
   display: grid;
   grid-template-columns: 216px minmax(0, 1fr);
-  gap: 16px;
-  margin-top: 12px;
+  gap: 20px;
+  margin-top: 14px;
   align-items: start;
 }
 .binderNav {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding-right: 12px;
+  gap: 14px;
+  padding-right: 14px;
   border-right: 1px solid var(--line);
 }
-.binderGroup { display: flex; flex-direction: column; gap: 4px }
+.binderGroup { display: flex; flex-direction: column; gap: 3px }
 .binderGroupLabel {
-  font-size: .72rem;
-  font-weight: 700;
-  letter-spacing: .06em;
+  font-size: var(--fs-xs);
+  font-weight: 750;
+  letter-spacing: .065em;
   text-transform: uppercase;
   color: var(--muted);
-  padding: 2px 8px;
+  padding: 2px 10px;
 }
 .binderNav button[role="tab"] {
   display: flex;
@@ -475,7 +640,7 @@ main > .top { margin-bottom: 12px }
   background: transparent;
   font-weight: 550;
 }
-.binderNav button[role="tab"]:hover { background: var(--control) }
+.binderNav button[role="tab"]:hover { background: var(--hover); border-color: transparent }
 .binderNav button[role="tab"][aria-selected="true"] {
   background: var(--gold);
   color: var(--bg);
@@ -483,55 +648,58 @@ main > .top { margin-bottom: 12px }
   font-weight: 700;
 }
 .binderNav .tabCount {
-  font-size: .75rem;
-  opacity: .82;
+  font-size: var(--fs-xs);
+  opacity: .84;
   font-variant-numeric: tabular-nums;
 }
 .binderContent { min-width: 0 }
 .managerPane { min-width: 0 }
 .managerTools { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 10px }
 .managerTools input[type="search"] { flex: 1 1 12rem }
-.inventoryMeta { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .8rem; font-size: .88rem }
+.inventoryMeta { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem .8rem; font-size: var(--fs-base)}
 .creditsInput { width: 6.5em; margin-inline-start: 4px }
 
-/* Single-Column Scannable Binder Lists & Full-Span Level Headers */
+/* Single-Column Scannable Binder Lists — clean hairline dividers, no card clutter */
 .library { display: grid; grid-template-columns: 1fr; margin-top: 6px }
+.library > .item, .featureAccordion { content-visibility: auto; contain-intrinsic-size: 0 56px }
 .library > h3 {
   grid-column: 1 / -1;
   margin: 14px 0 4px;
   padding-bottom: 4px;
-  font-size: .82rem;
+  font-size: var(--fs-xs);
   text-transform: uppercase;
-  letter-spacing: .04em;
+  letter-spacing: .055em;
   color: var(--muted);
   border-bottom: 1px solid var(--line);
 }
 .library > h3:first-child { margin-top: 4px }
 .item {
-  padding-block: 8px;
+  padding: 9px 6px;
   border-top: 1px solid var(--line);
+  border-radius: 5px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  transition: background-color .12s ease;
 }
-.library > h3 + .item { border-top: 0 }
+.item:hover { background: var(--hover) }
+.library > h3 + .item, .library > .item:first-child { border-top: 0 }
 .item > * { min-width: 0 }
 .inventoryItem > :first-child, .catalogItem > :first-child { overflow-wrap: anywhere }
-.inventoryControls { flex: none; flex-wrap: wrap; gap: 4px; justify-content: flex-end }
+.inventoryControls { flex: none; flex-wrap: wrap; gap: 5px; justify-content: flex-end }
 .qtyBtn { min-width: 30px; padding-inline: 8px }
 
-/* Binder Reference Sections (Class, Archetype, Background & Proficiencies) */
-.binderSection { display: grid; gap: 14px }
+/* Binder Reference Sections */
+.binderSection { display: grid; gap: 16px }
 .binderCard {
-  padding: 12px 14px;
-  border-radius: 8px;
-  background: var(--surface);
-  border: 1px solid var(--line);
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
   display: grid;
   gap: 8px;
 }
-.binderCard h3 { font-size: .95rem; color: var(--text) }
+.binderCard:last-child { border-bottom: 0; padding-bottom: 0 }
+.binderCard h3 { font-size: var(--fs-base); color: var(--text) }
 .featureAccordion {
   border-top: 1px solid var(--line);
   padding-block: 6px;
@@ -544,7 +712,7 @@ main > .top { margin-bottom: 12px }
   gap: 8px;
   min-height: 32px;
 }
-.featureAccordion .featureLevel { font-size: .78rem; color: var(--muted); font-weight: 500; flex: none }
+.featureAccordion .featureLevel { font-size: var(--fs-xs); color: var(--muted); font-weight: 500; flex: none }
 .featureAccordion .ruleText { margin-top: 8px; padding-left: 2px }
 .profList { display: grid; gap: 6px }
 .profRow {
@@ -554,16 +722,16 @@ main > .top { margin-bottom: 12px }
   gap: 10px;
   padding-top: 6px;
   border-top: 1px solid var(--line);
-  font-size: .9rem;
+  font-size: var(--fs-base);
 }
 .profRow:first-child { border-top: 0; padding-top: 0 }
-.profSource { font-size: .8rem; color: var(--muted); text-align: right }
+.profSource { font-size: var(--fs-sm); color: var(--muted); text-align: right }
 
 /* SearchablePicker Primitive */
 .searchablePicker { display: grid; gap: 8px; margin-top: 4px }
 .pickerSearch { width: 100% }
 .pickerChips { display: flex; flex-wrap: wrap; gap: 5px }
-.pickerChip { min-height: 30px; padding: 3px 9px; font-size: .82rem }
+.pickerChip { min-height: 30px; padding: 3px 10px; font-size: var(--fs-sm); border-radius: 999px }
 .pickerList {
   max-height: 15rem;
   overflow: auto;
@@ -589,19 +757,62 @@ main > .top { margin-bottom: 12px }
   min-height: 36px;
   font-weight: 550;
 }
-.pickerOptionBtn:hover { background: var(--control) }
+.pickerOptionBtn:hover { background: var(--control); border-color: transparent }
 .pickerOptionBtn[aria-pressed="true"] { background: var(--gold); color: var(--bg); font-weight: 700 }
 .pickerPreview {
-  padding: 8px 10px;
-  border-radius: 6px;
+  padding: 10px 12px;
+  border-radius: 8px;
   border: 1px solid var(--line);
   background: var(--surface);
-  font-size: .85rem;
+  font-size: var(--fs-sm);
   max-height: 11rem;
   overflow: auto;
 }
-.directChips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px }
-.directChips button { min-height: 36px }
+.directChips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 5px }
+.directChips button { min-height: 36px; border-radius: 7px }
+
+/* Character Setup & Missing Features Audit Items */
+.importAuditPreview {
+  margin: 12px 0 8px;
+  padding: 10px 13px;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, var(--line));
+  background: var(--gold-soft);
+  display: grid;
+  gap: 6px;
+}
+.importAuditPreview ul { margin: 0; padding-inline-start: 1.25rem }
+.importAuditPreview li + li { margin-top: 2px }
+.auditCard {
+  padding: 11px 12px;
+  border-top: 1px solid var(--line);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  border-radius: 6px;
+  display: grid;
+  gap: 7px;
+}
+.auditCard.is-choice { border-color: color-mix(in srgb, var(--gold) 42%, var(--line)) }
+.auditCard.is-missing { border-color: color-mix(in srgb, var(--blue) 42%, var(--line)) }
+.auditCard.is-complete { border-color: color-mix(in srgb, var(--green) 42%, var(--line)) }
+.auditCardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.auditBadge {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.auditBadge.is-choice { color: var(--gold); background: var(--gold-soft) }
+.auditBadge.is-missing { color: var(--blue); background: var(--blue-soft) }
+.auditBadge.is-info { color: var(--muted) }
 
 /* Cast Dialog */
 #castDialog { --dialog-inset: 16px }
@@ -610,27 +821,27 @@ main > .top { margin-bottom: 12px }
 .castRoleGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px }
 .castRoleGrid button { display: flex; align-items: center; gap: 8px; text-align: left; min-height: 44px }
 .castRoleGrid small { margin-inline-start: auto }
-.castSpellList h3 { margin: 12px 0 2px; font-size: .85rem; color: var(--muted) }
+.castSpellList h3 { margin: 12px 0 2px; font-size: var(--fs-sm); text-transform: uppercase; letter-spacing: .04em; color: var(--muted) }
 .castSpellList h3:first-child { margin-top: 0 }
 .castSpellRow {
   display: flex; width: 100%; align-items: center; flex-wrap: wrap; gap: 6px;
-  padding: 6px 8px; min-height: 44px;
+  padding: 7px 9px; min-height: 44px;
   border: 0; border-bottom: 1px solid var(--line); border-radius: 0;
   background: transparent; text-align: start;
 }
-.castSpellRow:hover { background: var(--control) }
+.castSpellRow:hover { background: var(--hover) }
 .castSpellRow small { margin-inline-start: auto }
 .castMark {
   display: inline-grid; place-items: center; width: 22px; height: 22px; min-height: 0; padding: 0;
-  font-size: 12px; font-weight: 700;
+  font-size: var(--fs-xs); font-weight: 700;
 }
 .castMark[title="Concentration"] { color: var(--blue); border: 1px solid; border-radius: 50% }
-.castDisabledHint { display: block; margin-top: 6px; color: var(--gold); font-size: .82rem; font-weight: 600 }
+.castDisabledHint { display: block; margin-top: 6px; color: var(--gold); font-size: var(--fs-sm); font-weight: 600 }
 
 /* Unified ModalFrame Dialogs */
 .sheetDialog {
   --dialog-inset: clamp(16px, 4vw, 24px);
-  width: min(calc(100% - 24px), 34rem);
+  width: min(calc(100% - 24px), 35rem);
   max-height: calc(100dvh - 24px);
   margin: auto;
   padding: 0;
@@ -638,14 +849,16 @@ main > .top { margin-bottom: 12px }
   background: var(--panel);
   color: var(--text);
   border: 1px solid var(--edge);
-  border-radius: 12px;
+  border-radius: 13px;
+  box-shadow: 0 20px 56px var(--shadow-xl);
 }
-.sheetDialog.modalReading, #infoModal { width: min(calc(100% - 24px), 42rem) }
+.sheetDialog.modalCompact { width: min(calc(100% - 24px), 26rem) }
+.sheetDialog.modalReading, #infoModal { width: min(calc(100% - 24px), 44rem) }
 .sheetDialog.modalCatalog, :is(#itemCatalog, #featCatalog, #powerCatalog, #optionCatalog) { width: min(calc(100% - 24px), 48rem) }
 .sheetDialog[open], .sheetDialog > form { display: flex; flex-direction: column; max-height: calc(100dvh - 24px) }
 .sheetDialog > form { min-height: 0 }
-.sheetDialog::backdrop { background: #0009 }
-.dialogHeader, .dialogFooter { flex: none; padding: 8px var(--dialog-inset) }
+.sheetDialog::backdrop { background: var(--backdrop); backdrop-filter: blur(2px) }
+.dialogHeader, .dialogFooter { flex: none; padding: 10px var(--dialog-inset); background: var(--surface) }
 .dialogHeader { border-bottom: 1px solid var(--line); min-height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 8px }
 .dialogHeader h2 { overflow-wrap: anywhere }
 .dialogFooter { border-top: 1px solid var(--line); display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap }
@@ -656,45 +869,53 @@ main > .top { margin-bottom: 12px }
   overscroll-behavior: contain;
   overflow-wrap: anywhere;
 }
-.dialogHeader button, .dialogFooter button { min-height: 40px }
-.dialogClose {
-  flex: none; width: 44px; min-height: 44px; font-size: 24px;
-  line-height: 1; background: transparent; border-color: transparent;
+.dialogHeader button:not(.dialogClose), .dialogFooter button { min-height: 40px }
+.dialogHeader button.dialogClose, .dialogClose {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  aspect-ratio: 1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--control);
+  color: var(--muted);
+  font-size: var(--fs-lg);
+  line-height: 1;
 }
-.modalFormFields { display: grid; gap: 12px }
-.modalFormFields label { display: grid; gap: 4px; font-size: .9rem }
+.dialogClose:hover { color: var(--text); border-color: var(--edge) }
+.modalFormFields { display: grid; gap: 13px }
+.modalFormFields label { display: grid; gap: 5px; font-size: var(--fs-base)}
 .modalFormFields label.row { display: flex; align-items: center; gap: 8px }
 
 /* Info Modal & Rules Typography (renderRules) */
 #infoBody > :first-child { margin-block-start: 0 }
 #infoBody > :last-child { margin-block-end: 0 }
 #infoBody > * + * { margin-block-start: 14px }
-.infoFacts {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 7.5rem), 1fr));
-  gap: 8px 16px;
-  margin: 0;
-}
-.infoFacts dt { font-size: 13px; color: var(--muted) }
-.infoFacts dd { margin: 3px 0 0 }
+
 .infoRules { line-height: 1.55 }
 
 .ruleText > * + * { margin-block-start: .65rem }
-.ruleText h3 { font-size: .95rem; margin-top: .9rem; color: var(--text) }
-.ruleText h4 { font-size: .88rem; margin-top: .75rem; color: var(--muted) }
+.ruleText h3 { font-size: var(--fs-base); margin-top: .9rem; color: var(--text) }
+.ruleText h4 { font-size: var(--fs-base); margin-top: .75rem; color: var(--muted) }
 .ruleText :is(ul, ol) { margin: 0; padding-inline-start: 1.35rem }
 .ruleText li + li { margin-top: 3px }
 .ruleText hr { border: 0; border-top: 1px solid var(--line); margin: .85rem 0 }
 .ruleText blockquote.statblock {
   margin: .75rem 0;
   padding: 10px 12px;
-  border-left: 3px solid var(--gold);
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, var(--line));
   background: var(--surface);
-  border-radius: 0 8px 8px 0;
+  border-radius: var(--r-md);
 }
 .ruleText blockquote.statblock > * + * { margin-top: .45rem }
 .tableScroll { overflow-x: auto; max-width: 100%; margin: .5rem 0 }
-.ruleText table { width: 100%; border-collapse: collapse; font-size: .875rem }
+.ruleText table { width: 100%; border-collapse: collapse; font-size: var(--fs-base)}
 .ruleText th, .ruleText td { border: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top }
 .ruleText th { background: var(--surface); font-weight: 650 }
 .ruleText .nowrapCol { white-space: nowrap }
@@ -702,29 +923,29 @@ main > .top { margin-bottom: 12px }
 /* Weapon Property Chips */
 .swPropChips { display: flex; flex-wrap: wrap; gap: 5px }
 .swPropChip {
-  min-height: 28px; padding: 2px 8px; font-size: .82rem;
-  border-radius: 4px; border: 1px solid var(--line); background: var(--surface); color: inherit; cursor: pointer;
+  min-height: 28px; padding: 2px 9px; font-size: var(--fs-sm);
+  border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: inherit; cursor: pointer;
 }
 .swPropChip:hover { border-color: var(--gold) }
 .swPropChip[aria-pressed="true"] { background: var(--gold); color: var(--bg); border-color: var(--gold) }
 .swPropTag {
-  display: inline-flex; align-items: center; padding: 2px 7px; font-size: .82rem;
-  color: var(--muted); border: 1px dashed var(--line); border-radius: 4px;
+  display: inline-flex; align-items: center; padding: 2px 8px; font-size: var(--fs-sm);
+  color: var(--muted); border: 1px dashed var(--line); border-radius: 999px;
 }
 .swPropDetail {
   margin: 10px 0 12px; padding: 10px 12px;
-  border: 1px solid var(--gold); border-radius: 6px;
-  background: color-mix(in srgb, var(--gold) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, var(--line)); border-radius: 6px;
+  background: var(--gold-soft);
 }
 .swPropDetail > b { display: block; margin-bottom: 4px; color: var(--gold) }
 
 /* Effect Editor */
 #conditionEditor .effectFields { display: grid; gap: 12px }
-#conditionForm label { display: grid; gap: 4px; font-size: 14px }
+#conditionForm label { display: grid; gap: 4px; font-size: var(--fs-base)}
 #conditionChoices { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 5px; padding: 0 }
-#conditionChoices button { text-align: left; font-size: 14px }
+#conditionChoices button { text-align: left; font-size: var(--fs-base)}
 #conditionChoices button[value=Custom] { order: -1 }
-#conditionPreview { color: var(--muted); font-size: 14px }
+#conditionPreview { color: var(--muted); font-size: var(--fs-base)}
 #conditionPreview:empty { display: none }
 
 /* Catalog Filters & Footers */
@@ -743,34 +964,33 @@ main > .top { margin-bottom: 12px }
 .restSummary, .restRolls { margin: 0; padding-left: 1.25rem }
 .restSummary li + li, .restRolls li + li { margin-top: 4px }
 .restPrimary:enabled { background: var(--gold); color: var(--bg); border-color: var(--gold) }
-.restPrimary:enabled:hover { color: var(--bg); text-decoration: underline }
-#restHealingPreview { font-weight: 600 }
+#restHealingPreview { font-weight: 650 }
 .hitDieChips { display: flex; flex-wrap: wrap; gap: 5px }
 .hitDieChips button { min-width: 36px; min-height: 36px; padding: 4px 8px }
 
 /* Import Review */
 #loadError { margin: 8px 0 }
-.importReview > p { margin: 5px 0 12px }
-.importReview > h3 { margin-top: 12px }
+.importReview > p { margin: 5px 0 10px }
+.importReview > h3 { margin-top: 10px }
 .importReview label { display: flex; align-items: flex-start; gap: 7px; margin-block: 8px }
-.importReview fieldset { min-inline-size: 0; border: 1px solid var(--line); padding: 4px 10px; border-radius: 8px }
+.importReview fieldset { min-inline-size: 0; border: 1px solid var(--line); padding: 6px 12px; border-radius: 8px }
 .importWarning { font-weight: 650; color: var(--gold) }
 
-/* Toast Feedback */
+/* Toast Feedback (floating bottom-center, clear of top bar, mobileNav, and rest buttons) */
 #feedback {
-  position: fixed; bottom: 12px; right: 12px; z-index: 25;
+  position: fixed; bottom: max(14px, env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); z-index: 25;
   width: max-content; max-width: calc(100% - 24px);
   display: flex; align-items: center; gap: 8px;
-  border: 1px solid var(--edge); border-radius: 8px;
-  padding: 8px 10px; background: var(--panel); box-shadow: 0 3px 18px #0004;
+  border: 1px solid var(--edge); border-radius: 10px;
+  padding: 9px 12px; background: var(--panel); box-shadow: 0 10px 28px var(--shadow-sm);
 }
-.notice { white-space: pre-line; overflow-wrap: anywhere; font-size: 14px; flex: 1 1 12rem }
+.notice { white-space: pre-line; overflow-wrap: anywhere; font-size: var(--fs-base); flex: 1 1 12rem }
 
 /* Responsive Breakpoints: Tablet (<=1000px) & Mobile (<=720px / <=480px) */
 .mobileNav, .stickyState { display: none }
 
 @media (min-width: 721px) {
-  .dashboardGrid { grid-template-rows: auto 1fr; row-gap: 8px }
+  .dashboardGrid { grid-template-rows: auto 1fr; row-gap: 10px }
   .dashboardMain { grid-row: 1 / 3 }
   #activeStatus { grid-column: 2; align-self: start; margin-top: 0 }
 }
@@ -781,9 +1001,9 @@ main > .top { margin-bottom: 12px }
 }
 
 @media (max-width: 720px) {
-  main { padding: 86px 8px 100px }
-  main > .top { margin-bottom: 8px }
-  .panel { padding: 12px }
+  main { padding: 86px 10px 100px }
+  main > .top { margin-bottom: 10px }
+  .panel { padding: 13px; border-radius: 12px }
   .mobileNav, .stickyState {
     position: fixed; left: 0; right: 0;
     display: flex; align-items: center;
@@ -793,21 +1013,22 @@ main > .top { margin-bottom: 12px }
   .mobileNav a {
     flex: 1; text-align: center; min-height: 44px;
     display: flex; align-items: center; justify-content: center;
-    color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 600;
+    color: var(--muted); text-decoration: none; font-size: var(--fs-base); font-weight: 600;
   }
   .mobileNav a[aria-current="location"] { color: var(--text); box-shadow: inset 0 -3px var(--gold) }
-  .stickyState { top: 44px; height: 34px; gap: 8px; padding: 0 10px; white-space: nowrap; font-size: 12px }
+  .stickyState { top: 44px; height: 34px; gap: 8px; padding: 0 10px; white-space: nowrap; font-size: var(--fs-xs)}
   .stickyForm { overflow: hidden; text-overflow: ellipsis; min-width: 0; margin-right: auto }
   .stickyState a { color: var(--blue); padding-block: 6px }
   .sectionAnchor { scroll-margin-top: 84px }
 
-  .dashboardGrid { grid-template-columns: minmax(0, 1fr); gap: 10px }
+  .dashboardGrid { grid-template-columns: minmax(0, 1fr); gap: 12px }
   .formStats { grid-template-columns: repeat(3, minmax(0, 1fr)) }
   #activeStatus { margin-top: 0 }
-  .combatLayout { margin-block: 8px; gap: 8px }
-  #action-economy .g3 { grid-template-columns: minmax(0, 1fr); gap: 8px }
-  .actionColumn + .actionColumn { border-top: 1px solid var(--line); padding-top: 8px }
+  .combatLayout { margin-block: 10px; gap: 10px }
+  #action-economy .g3 { grid-template-columns: minmax(0, 1fr); gap: 10px }
+  .actionColumn + .actionColumn { padding-top: 6px }
   .freeTriggersGrid { grid-template-columns: minmax(0, 1fr) }
+  .freeTriggersGrid .swAction:nth-child(2) { border-top: 1px solid var(--line) }
 
   /* Mobile Grouped Binder: horizontal pill strip */
   .binderLayout { grid-template-columns: minmax(0, 1fr); gap: 10px }
@@ -823,12 +1044,17 @@ main > .top { margin-bottom: 12px }
   .binderGroup { flex-direction: row; align-items: center; gap: 4px; flex: none }
   .binderGroupLabel { padding: 0 4px 0 2px; white-space: nowrap }
   .binderNav button[role="tab"] { width: auto; white-space: nowrap; min-height: 44px; padding: 6px 12px; border-color: var(--line); background: var(--control) }
+  .formStats .detailName, .saveGrid .detailName, #defense .detailName { min-height: 40px; min-width: 40px; display: inline-flex; align-items: center }
+  .saveGrid .detailName { width: 100%; justify-content: space-between }
+}
+
+@media (max-width: 440px) {
+  .saveGrid { grid-template-columns: repeat(2, minmax(0, 1fr)) }
 }
 
 @media (max-width: 480px) {
   .inventoryItem, .catalogItem { flex-wrap: wrap }
   .inventoryItem > :first-child, .catalogItem > :first-child { flex-basis: 100% }
-  .swActionControls { justify-content: flex-start }
   #castDialog, #castDialog[data-stage="options"] {
     --dialog-inset: 12px; width: 100%; max-width: 100%;
     inset: auto 0 0; margin: 0; max-height: 90dvh;
@@ -843,4 +1069,904 @@ main > .top { margin-bottom: 12px }
   .swWeaponToggle, .swPropChip, .pickerChip { min-height: 44px }
   .skillGrid .skillCell { min-height: 44px }
   .formStats .detailName, .saveGrid .detailName, #defense .detailName { min-height: 44px; display: inline-flex; align-items: center }
+}
+
+/* Ability Scores Strip (clean flat 3x2 editorial grid) */
+.abilityGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px 12px;
+  margin-top: 6px;
+}
+.abilityCell {
+  border-top: 1px solid var(--line);
+  padding: 5px 2px 3px 6px;
+  
+}
+.abilityCell.is-adjusted { border-color: color-mix(in srgb, var(--blue) 45%, var(--line)) }
+.abilityBtn {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  white-space: nowrap;
+  font-size: var(--fs-base);
+  text-decoration: none;
+}
+.abilityBtn:hover { color: var(--blue); background: transparent }
+.abilityAbbr { font-size: var(--fs-xs); font-weight: 700; color: var(--muted); letter-spacing: .04em }
+
+/* Clickable weapon/action calculation line */
+.actionCalcBtn {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-top: 3px;
+  padding: 0;
+  min-height: 22px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: var(--fs-sm);
+  font-weight: 450;
+  text-align: left;
+  line-height: 1.4;
+  text-decoration: underline dotted color-mix(in srgb, var(--edge) 65%, transparent);
+  text-underline-offset: 3px;
+}
+.actionCalcBtn:hover { background: transparent; border-color: transparent; color: var(--blue) }
+
+/* Focus Points Mana Bar */
+.resourceManaBlock.is-focus { border-color: color-mix(in srgb, var(--mana-focus) 42%, var(--line)); background: color-mix(in srgb, var(--mana-focus) 6%, var(--surface)) }
+.resourceManaBlock.is-focus .resourceCount { color: var(--mana-focus-text); font-weight: 750 }
+.manaBar.is-focus i { background: var(--mana-focus) }
+.resourceManaBlock.is-superiority { border-color: color-mix(in srgb, var(--gold) 42%, var(--line)); background: color-mix(in srgb, var(--gold) 6%, var(--surface)) }
+.resourceManaBlock.is-superiority .resourceCount { color: var(--gold); font-weight: 750 }
+.manaBar.is-superiority i { background: var(--gold) }
+
+/* Unified inline stat + mini (i) calculation button */
+.statRowInline { display: inline-flex; align-items: center; gap: 3px; max-width: 100% }
+.actionsFooter {
+  margin-top: 14px; padding-top: 10px;
+  border-top: 1px solid var(--line);
+  display: flex; justify-content: flex-end;
+}
+.abilityTabGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr));
+  column-gap: 18px;
+}
+.abilityTabRow, .skillRowWrap {
+  display: flex; align-items: center; gap: 2px;
+  border-top: 1px solid var(--line);
+}
+.abilityTabRow .skillCell, .skillRowWrap .skillCell {
+  flex: 1; border-top: 0;
+}
+
+/* === v8 UI/UX Polish: Column Info Headers, Abilities 3x2 Stat Grid, Unified Die-Roll Keypad & Action Grants === */
+.actionColHead { display: inline-flex; align-items: center; gap: 4px; margin-bottom: 2px }
+.actionColHead b { font-size: var(--fs-sm); color: var(--muted); text-transform: uppercase; letter-spacing: .04em }
+
+.saveProfTag { display: inline-block; margin-left: 5px; padding: 0 4px; border-radius: 4px; font-size: var(--fs-xs); font-weight: 700; color: var(--gold); background: var(--gold-soft); vertical-align: 1px }
+.saveProfTag.is-exp { color: var(--blue); background: var(--blue-soft) }
+.skillTraining.is-exp { color: var(--blue) }
+.skillTraining.is-half { color: var(--muted) }
+
+/* Redesigned Abilities Tab: Scannable 3x2 Stat-Block Grid */
+.abilityTabGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+@media (max-width: 640px) {
+  .abilityTabGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.abilityTile {
+  display: flex;
+  flex-direction: column;
+  padding: 10px 12px 12px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  transition: border-color .12s ease, background .12s ease;
+}
+.abilityTile:hover { border-color: var(--edge); background: var(--hover) }
+.abilityTile.is-adjusted { border-color: color-mix(in srgb, var(--blue) 48%, var(--line)) }
+.abilityTileHead { display: flex; align-items: center; justify-content: space-between; gap: 4px }
+.abilityTileName { font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--muted) }
+.abilityTileBody {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  padding: 4px 0 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  min-height: 0;
+}
+.abilityTileBody:hover { background: transparent; color: var(--blue) }
+.abilityTileMod { font-size: var(--fs-xl); line-height: 1.1; font-weight: 750; color: var(--text); font-variant-numeric: tabular-nums }
+.abilityTileBody:hover .abilityTileMod { color: var(--blue) }
+.abilityTileScore { font-size: var(--fs-xs); color: var(--muted); font-variant-numeric: tabular-nums }
+
+/* Action Grant Controls & Scannable Micro-Copy */
+.swAction .actionCostPill { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: var(--r-pill); font-size: var(--fs-xs); font-weight: 600; font-variant-numeric: tabular-nums; border: 1px solid color-mix(in srgb, var(--blue) 45%, var(--line)); background: var(--blue-soft); color: var(--blue); white-space: nowrap }
+.swAction .actionCostPill.is-empty { border-color: var(--line); background: transparent; color: var(--muted) }
+.swAction .actionActivePill { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: var(--r-pill); font-size: var(--fs-xs); font-weight: 650; border: 1px solid var(--gold); background: var(--gold-soft); color: var(--gold); white-space: nowrap }
+.swAction .actionSourceTag { display: block; font-size: var(--fs-xs); color: color-mix(in srgb, var(--muted) 78%, transparent); margin-top: 1px }
+
+/* Unified Die-Roll Field (1..dN Keypad + Synced Input + Roll dX + Live Nested Preview) */
+.dieRollBox { display: grid; gap: 10px }
+.dieLiveBanner { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; padding: 10px 12px; border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--line); font-variant-numeric: tabular-nums }
+.dieLiveFormula { font-size: var(--fs-sm); color: var(--muted) }
+.dieLiveTotal { font-size: var(--fs-md); font-weight: 700; color: var(--green) }
+.dieLiveImpact { font-size: var(--fs-xs); color: var(--blue); font-weight: 600 }
+.dieKeypad { display: flex; flex-wrap: wrap; gap: 6px }
+.dieKeyBtn { min-width: 38px; min-height: 36px; padding: 4px 8px; border-radius: var(--r-sm); font-size: var(--fs-base); font-weight: 600; font-variant-numeric: tabular-nums; background: var(--control); border: 1px solid var(--edge); color: var(--text) }
+.dieKeyBtn:hover { background: var(--control-hover); border-color: var(--blue) }
+.dieKeyBtn[aria-pressed="true"] { background: var(--gold); color: var(--bg); border-color: var(--gold); font-weight: 700 }
+.dieInputRow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap }
+.dieInputRow input[type="number"] { width: 92px; text-align: center; font-variant-numeric: tabular-nums }
+.dieRollBtn { display: inline-flex; align-items: center; color: var(--blue); border-color: color-mix(in srgb, var(--blue) 45%, var(--edge)) }
+
+/* Cast Dialog: Controls Above the Fold + Always-Visible Power Damage & Rules */
+.castControlsTop { display: grid; gap: 10px; padding: 12px; border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--line); margin: 8px 0 12px }
+.castDescVisible { margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--line) }
+
+/* Compact Info Modal Facts & Bulleted Math Popover Notes */
+.infoFacts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px 14px; padding: 10px 12px; border-radius: var(--r-md); background: var(--surface); border: 1px solid var(--line); margin: 0 0 14px }
+.infoFacts > div { display: grid; gap: 2px }
+.infoFacts dt { font-size: var(--fs-xs); color: var(--muted) }
+.infoFacts dd { margin: 0; font-size: var(--fs-sm); font-weight: 600; color: var(--text) }
+.popoverNotesList { margin: 8px 0 0; padding: 8px 0 0 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: var(--fs-xs); display: grid; gap: 4px }
+
+/* Tabular numerals across all combat figures */
+.stat b, .skillCell b, .resourceCount, .healthLine .big, .formStats dd { font-variant-numeric: tabular-nums }
+
+@media (pointer: coarse) {
+  .dieKeyBtn { min-width: 44px; min-height: 44px }
+}
+
+/* === v9 Standardization: Unified Library Toolbars, Clean Info Popups & Popover Fix === */
+.catalogBody { padding-top: 0 }
+.catalogToolbar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: grid;
+  gap: 8px;
+  padding: 12px 0 10px;
+  margin-bottom: 10px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+.catalogToolbarRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.catalogToolbarRow > input[type="search"] { flex: 1 1 13rem; min-width: 11rem }
+.catalogToolbarRow > select { flex: 0 1 auto; max-width: 100% }
+.catalogToolbar .pickerChips { margin: 0 }
+
+/* Standardized Info Modal Metadata Grid (supports wide rows for chips/effects) */
+.infoFacts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(132px, 1fr));
+  gap: 10px 16px;
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  margin: 0 0 16px;
+}
+.infoFacts > div { display: grid; gap: 3px; align-content: start }
+.infoFacts > div.is-wide { grid-column: 1 / -1; padding-top: 6px; border-top: 1px solid var(--line) }
+.infoFacts > div.is-wide:first-child { padding-top: 0; border-top: 0 }
+.infoFacts dt { font-size: var(--fs-xs); font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em }
+.infoFacts dd { margin: 0; font-size: var(--fs-base); font-weight: 600; color: var(--text); line-height: 1.4; font-variant-numeric: tabular-nums }
+.infoFactsCompact { margin: 0; padding: 10px 12px; gap: 10px 14px; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) }
+.infoFacts > div.is-total dd { font-size: var(--fs-md); font-weight: 700; color: var(--blue) }
+.statModHeader { display: flex; align-items: baseline; justify-content: space-between; font-size: var(--fs-base); margin-top: 2px }
+.statModHeader b { font-size: var(--fs-md); font-variant-numeric: tabular-nums }
+.statModControls { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px }
+.statModControls button { min-height: 40px; font-size: var(--fs-base); font-weight: 600; padding-inline: 6px }
+#infoBody .ruleText { max-width: 65ch; line-height: 1.6; font-size: var(--fs-base)}
+
+/* === v10 Pass 4: Character Binder Polish, Math Popover Hierarchy & Light-Mode Parity === */
+.featureAccordion summary { cursor: pointer; list-style: none }
+.featureAccordion summary::-webkit-details-marker { display: none }
+.featureAccordion summary::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 6px;
+  color: var(--muted);
+  transition: transform .12s ease;
+}
+.featureAccordion[open] summary::before { transform: rotate(90deg); color: var(--blue) }
+.featureAccordion summary > span:first-child { flex: 1; font-weight: 600 }
+
+.managerTools {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.managerTools > button:first-child {
+  border-color: color-mix(in srgb, var(--blue) 45%, var(--edge));
+  color: var(--blue);
+  font-weight: 600;
+}
+
+.mathPopoverHead {
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--line);
+}
+.mathPopoverList dd { font-variant-numeric: tabular-nums }
+.mathPopoverList dt:last-of-type, .mathPopoverList dd:last-of-type { padding-top: 4px }
+
+.light .abilityTile,
+.light .dieLiveBanner,
+.light .castControlsTop,
+.light .infoFacts {
+  background: var(--surface);
+  border-color: var(--line);
+}
+
+/* === v11 Pass 5: Top Dashboard, Active Effects Shelf & + Effect Modal === */
+#activeStatus {
+  display: grid;
+  gap: 8px;
+  align-items: start;
+}
+.effectsToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 8px;
+}
+.effectsToolbar .row { gap: 6px }
+#effectsCount { font-size: var(--fs-xs); font-variant-numeric: tabular-nums }
+#openEffects {
+  min-height: 30px;
+  padding: 2px 10px;
+  font-size: var(--fs-sm);
+  border-color: color-mix(in srgb, var(--blue) 45%, var(--edge));
+  color: var(--blue);
+  font-weight: 600;
+}
+.effectEntries {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 6px;
+}
+#effects, #conditionList { display: contents }
+#effectsEmpty { font-size: var(--fs-sm) }
+
+.effectEntries details {
+  border-radius: var(--r-sm);
+  padding: 0 10px;
+  transition: border-color .12s ease;
+}
+.effectEntries details:hover { border-color: var(--edge) }
+.effectEntries details[data-entry="concentration"] {
+  border-color: color-mix(in srgb, var(--blue) 48%, var(--line));
+  background: var(--blue-soft);
+}
+.effectEntries details[data-entry="rage"] {
+  border-color: color-mix(in srgb, var(--gold) 48%, var(--line));
+  background: var(--gold-soft);
+}
+.effectEntries summary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 30px;
+  font-size: var(--fs-sm);
+}
+.effectEntries summary::-webkit-details-marker { display: none }
+.effectEntries summary::before {
+  content: "▸";
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  transition: transform .12s ease;
+}
+.effectEntries details[open] summary::before { transform: rotate(90deg); color: var(--blue) }
+.effectEntries details[open] { padding-bottom: 10px }
+
+/* + Effect Modal Choice Grid & Preview Box */
+#conditionEditor .effectFields { padding-top: 0 }
+.effectChoiceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
+  gap: 6px;
+  max-height: 12.5rem;
+  overflow: auto;
+  padding: 2px;
+}
+.effectChoiceGrid button {
+  text-align: left;
+  font-size: var(--fs-sm);
+  min-height: 34px;
+  padding: 4px 10px;
+}
+.effectChoiceGrid button[aria-pressed="true"] {
+  background: var(--gold);
+  color: var(--bg);
+  border-color: var(--gold);
+  font-weight: 650;
+}
+.effectPreviewBox {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: var(--fs-sm);
+  color: var(--text);
+}
+.effectPreviewBox:empty { display: none }
+
+/* === v12 Pass 6: Rest Dialog, Import Review & Setup Audit Cohesion === */
+.restSummary {
+  margin: 0;
+  padding: 10px 14px 10px 28px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: var(--fs-sm);
+}
+.restSummary:empty { display: none }
+.hitDieChips { gap: 6px }
+.hitDieChips button {
+  min-width: 38px;
+  min-height: 36px;
+  padding: 4px 8px;
+  border-radius: var(--r-sm);
+  font-size: var(--fs-base);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  background: var(--control);
+  border: 1px solid var(--edge);
+}
+.hitDieChips button:hover { background: var(--control-hover); border-color: var(--blue) }
+.restRolls {
+  margin: 4px 0 0;
+  padding: 8px 12px 8px 28px;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.importWarning {
+  padding: 10px 12px;
+  border-radius: var(--r-md);
+  background: var(--gold-soft);
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, var(--line));
+  font-size: var(--fs-sm);
+}
+.importReview fieldset {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 10px 12px;
+}
+.importReview legend { font-size: var(--fs-xs); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); padding: 0 4px }
+
+.auditCard {
+  padding: 12px 14px;
+  border-radius: var(--r-md);
+  background: var(--surface);
+  display: grid;
+  gap: 8px;
+}
+.auditCard .directChips button,
+.auditCard > button {
+  border-color: color-mix(in srgb, var(--blue) 45%, var(--edge));
+}
+
+/* === v13 Pass 7: 375px Mobile Ergonomics & Light-Mode Contrast Polish === */
+@media (max-width: 480px) {
+  .catalogToolbarRow { gap: 6px }
+  .catalogToolbarRow > input[type="search"] { flex: 1 1 100%; min-width: 0 }
+  .catalogToolbarRow > select { flex: 1 1 calc(50% - 6px); min-width: 0 }
+  .infoFacts { grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); padding: 10px 12px }
+  .effectChoiceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)) }
+  .dieInputRow { flex-wrap: nowrap }
+  .dieInputRow input[type="number"] { width: 76px }
+  .managerTools > input[type="search"] { flex: 1 1 100%; min-width: 0 }
+}
+
+@media (pointer: coarse) {
+  .hitDieChips button { min-width: 44px; min-height: 44px }
+  }
+
+.light .saveProfTag { background: color-mix(in srgb, var(--gold) 16%, transparent); color: var(--gold) }
+.light .saveProfTag.is-exp { background: color-mix(in srgb, var(--blue) 14%, transparent); color: var(--blue) }
+.light .swAction .actionCostPill { color: var(--blue); border-color: color-mix(in srgb, var(--blue) 40%, var(--line)) }
+.light .swAction .actionActivePill { color: var(--gold); border-color: color-mix(in srgb, var(--gold) 45%, var(--line)) }
+
+/* === v20 Click-First UI & Transparent Formula Banner === */
+.formulaBanner {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--blue-soft);
+  border: 1px solid color-mix(in srgb, var(--blue) 28%, var(--line));
+  display: grid;
+  gap: 8px;
+}
+.formulaLine { display: grid; gap: 3px }
+.formulaLine + .formulaLine {
+  padding-top: 7px;
+  border-top: 1px solid color-mix(in srgb, var(--blue) 20%, var(--line));
+}
+.formulaRule {
+  font-size: var(--fs-sm);
+  line-height: 1.35;
+  color: var(--muted);
+}
+.formulaEq {
+  font-size: var(--fs-base);
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.formulaOp { color: var(--muted); font-weight: 500 }
+.formulaTerm { color: var(--text) }
+.formulaTotal { color: var(--blue); font-weight: 750 }
+.light .formulaBanner {
+  background: color-mix(in srgb, var(--blue) 8%, var(--panel));
+  border-color: color-mix(in srgb, var(--blue) 26%, var(--line));
+}
+.light .formulaTotal { color: var(--blue) }
+
+.headingTrigger {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px dotted color-mix(in srgb, var(--muted) 65%, transparent);
+  border-radius: 0;
+  padding: 0 0 1px;
+  min-height: 0;
+  min-width: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: color .12s ease, border-color .12s ease;
+}
+.headingTrigger:hover,
+.headingTrigger:focus-visible {
+  color: var(--blue);
+  border-bottom-color: var(--blue);
+  background: transparent;
+}
+.headingTrigger.is-danger { color: var(--red); border-bottom-color: color-mix(in srgb, var(--red) 60%, transparent) }
+.headingTrigger.is-danger:hover,
+.headingTrigger.is-danger:focus-visible { color: var(--red); border-bottom-color: var(--red) }
+
+.rowTrigger {
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 4px 6px;
+  margin: -4px -6px;
+  min-width: 0;
+  flex: 1 1 auto;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  display: block;
+  transition: background .12s ease;
+}
+.rowTrigger:hover { background: var(--hover); border-color: transparent }
+.rowTrigger:hover > b,
+.rowTrigger:hover > .rowTriggerTitle { text-decoration: underline; text-underline-offset: 2px; color: var(--blue) }
+.rowTrigger:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px }
+.rowTrigger > b,
+.rowTrigger > .rowTriggerTitle { display: block; font-weight: 650; color: var(--text) }
+.rowTrigger > .muted,
+.rowTrigger > small { display: block; margin-top: 2px; line-height: 1.4; font-weight: 400 }
+
+.swActionRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.swActionRight {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 5px;
+  flex: 0 0 auto;
+}
+.swActionUseBtn {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.rowStatic {
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  padding: 4px 6px;
+  margin: -4px -6px;
+  min-width: 0;
+  flex: 1 1 auto;
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  display: block;
+}
+.rowStatic > b,
+.rowStatic > .rowTriggerTitle { display: block; font-weight: 650; color: var(--text) }
+.rowStatic > .muted,
+.rowStatic > small { display: block; margin-top: 2px; line-height: 1.4; font-weight: 400 }
+.swActionLeft {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.actionCalcBtn { font-variant-numeric: tabular-nums }
+.weaponPopoverProps { margin-top: 8px }
+.formStats > div.is-adjusted {
+  border: 1px solid color-mix(in srgb, var(--blue) 52%, var(--line));
+  border-radius: var(--r-sm);
+  padding: 2px 5px;
+  margin: -3px -6px;
+}
+.saveGrid .stat.is-adjusted {
+  border: 1px solid color-mix(in srgb, var(--blue) 52%, var(--line));
+  border-radius: var(--r-sm);
+}
+.skillGrid .skillCell.is-adjusted,
+.skillRowWrap .skillCell.is-adjusted {
+  border: 1px solid color-mix(in srgb, var(--blue) 52%, var(--line));
+  border-radius: var(--r-sm);
+}
+.abilityTile.is-adjusted {
+  border-color: color-mix(in srgb, var(--blue) 55%, var(--line));
+}
+.adjustedMark {
+  color: var(--blue);
+  font-weight: 700;
+  margin-left: 2px;
+}
+
+/* Progressive-disclosure reference chips inside anchored Action/Bonus/Reaction popovers */
+.popoverRefList {
+  display: grid;
+  gap: 10px;
+}
+.popoverRefChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.popoverRefChip {
+  min-height: 30px;
+  padding: 4px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  cursor: pointer;
+}
+.popoverRefChip:hover,
+.popoverRefChip:focus-visible {
+  border-color: var(--edge);
+  background: var(--hover);
+  color: var(--blue);
+}
+.popoverRefChip[aria-pressed="true"] {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+.popoverRefDetail {
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 4px;
+}
+.popoverRefDetailTitle {
+  font-size: var(--fs-base);
+  font-weight: 650;
+  color: var(--text);
+}
+.popoverRefHint {
+  margin: 0;
+  font-size: var(--fs-sm);
+}
+.popoverRefBody {
+  font-size: var(--fs-sm);
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.effectActions { margin-top: 8px; gap: 6px }
+.fullRulesBtn { font-size: var(--fs-xs); color: var(--blue); border-color: color-mix(in srgb, var(--blue) 35%, var(--line)); background: transparent }
+.fullRulesBtn:hover { background: var(--blue-soft) }
+
+/* Full-width save & skill cells without trailing ⓘ */
+.saveGrid .statRowInline { display: flex; width: 100% }
+.saveGrid .statRowInline > .detailName { width: 100%; justify-content: space-between }
+.saveLabelMain { display: inline-flex; align-items: center; gap: 2px; min-width: 0 }
+.skillRowWrap > .skillCell { width: 100% }
+button.abilityTile {
+  width: 100%;
+  text-align: center;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+button.abilityTile:hover .abilityTileMod { color: var(--blue) }
+button.abilityTile:focus-visible { outline: 2px solid var(--blue); outline-offset: 1px }
+
+@media (max-width: 720px) {
+  .rowTrigger { min-height: 40px; padding: 6px 8px; margin: -4px -8px }
+  .skillCell, .infoBtn, .dieKeyBtn, .swActionUseBtn { min-height: 40px }
+  .swActionRow { flex-wrap: wrap }
+  .swActionRight { width: 100%; justify-content: flex-start }
+}
+
+/* Cast Dialog Combat Readout & Stay-Open Resolved Banner */
+.castCombatStrip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 8px 14px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.castCombatCell { display: grid; gap: 2px; min-width: 0 }
+.castCombatLabel {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--muted);
+}
+.castCombatVal { font-size: var(--fs-base); font-weight: 700; color: var(--text) }
+.castCombatSub { font-size: var(--fs-xs); color: var(--muted) }
+.castModList {
+  display: grid;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 9px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.castModListTitle {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--muted);
+}
+.castModRow { font-size: var(--fs-sm); color: var(--text); line-height: 1.4 }
+.castModRow strong { color: var(--gold) }
+.castResolvedBanner {
+  display: grid;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--gold) 10%, var(--surface));
+}
+.castResolvedHead { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 12px }
+.castResolvedTitle { font-size: var(--fs-md); font-weight: 700; color: var(--gold) }
+.castResolvedPool { font-size: var(--fs-sm); color: var(--muted); font-variant-numeric: tabular-nums }
+.castResolvedActions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-end; margin-top: 2px }
+.castResolvedActions .primaryBtn { background: var(--gold); color: var(--text); border-color: var(--gold); font-weight: 700 }
+.choiceRowCard {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 14px;
+  padding: 10px 0;
+  margin-top: 10px;
+  border-top: 1px solid var(--line);
+}
+.choiceRowCard > div { flex: 1 1 220px; min-width: 0 }
+.choiceRowCard p { margin: 3px 0 0; font-size: var(--fs-sm) }
+.auditCard.is-actionable { border-color: color-mix(in srgb, var(--gold) 45%, var(--line)) }
+.auditBadge.is-actionable {
+  background: color-mix(in srgb, var(--gold) 16%, transparent);
+  color: var(--gold);
+}
+
+.skillUtilityNotes{margin-top:.75rem;padding-top:.65rem;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:.35rem}
+.skillUtilityNotes > b{font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+.skillUtilityItem{font-size:var(--fs-sm);line-height:1.35;color:var(--text)}
+.skillFloorPill, .saveFloorPill {
+  margin-left: 5px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: var(--r-sm);
+  background: var(--blue-soft);
+  color: var(--blue);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.situationalStrip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+#skillSituationalStrip {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.situationalLabel {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 2px;
+}
+.situationalPill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  max-width: 100%;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+.situationalPill:hover,
+.situationalPill:focus-visible {
+  background: var(--hover);
+  border-color: var(--edge);
+}
+.situationalPill:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.situationalPill.is-adv {
+  background: var(--green-soft);
+  border-color: color-mix(in srgb, var(--green) 40%, var(--line));
+  color: var(--green);
+}
+.situationalPill.is-disadv {
+  background: var(--red-soft);
+  border-color: color-mix(in srgb, var(--red) 40%, var(--line));
+  color: var(--red);
+}
+.swAction.is-disabled { opacity: 0.55; }
+
+/* Pass 14: Inline clickable .ruleLink buttons & #infoModal navigation breadcrumbs */
+.ruleLink {
+  display: inline;
+  background: transparent;
+  border: 0;
+  text-decoration: underline dotted color-mix(in srgb, var(--blue) 70%, transparent);
+  text-underline-offset: 3px;
+  border-radius: 3px;
+  padding: 0 1px;
+  margin: 0;
+  min-height: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--blue);
+  text-align: left;
+  cursor: pointer;
+  line-height: inherit;
+  transition: color 120ms ease, border-color 120ms ease, background 120ms ease;
+}
+.ruleLink:hover,
+.ruleLink:focus-visible {
+  background: var(--blue-soft);
+  text-decoration: underline solid var(--blue);
+}
+.ruleLink:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.ruleLinkChain {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px 6px;
+}
+.ruleLinkSep {
+  color: var(--muted);
+  font-weight: 400;
+  user-select: none;
+}
+.infoHeaderStart {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.infoBackBtn {
+  flex: none;
+  min-height: 36px;
+  padding: 4px 10px;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.infoBreadcrumbs:not([hidden]) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 6px;
+  padding: 6px var(--dialog-inset);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
+.infoCrumbBtn {
+  background: transparent;
+  border: 0;
+  text-decoration: underline dotted color-mix(in srgb, var(--blue) 65%, transparent);
+  text-underline-offset: 3px;
+  border-radius: 3px;
+  padding: 2px 3px;
+  margin: 0;
+  min-height: 0;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--blue);
+  cursor: pointer;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+.infoCrumbBtn:hover,
+.infoCrumbBtn:focus-visible {
+  background: var(--blue-soft);
+  text-decoration: underline solid var(--blue);
+}
+.infoCrumbBtn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+.infoCrumbCurrent {
+  color: var(--text);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 720px) {
+  .infoBackBtn { min-height: 40px; padding: 6px 10px }
 }

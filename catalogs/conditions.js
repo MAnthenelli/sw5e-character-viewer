@@ -22,3 +22,40 @@ globalThis.SW5E_CONDITIONS = {
   "Weakened": "- A creature suffering from the weakened condition heals at a slower rate. When an effect restores hit points to the creature, the amount of hit points restored is halved.\n- Creatures suffering from this condition can only add half their ability modifier to ability checks, attack rolls, and saving throws, unless that modifier would be negative."
 };
 
+globalThis.SW5E_CONDITION_DEFS = [
+  { name: "Blinded", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: [], contextual: true, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Charmed", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: [], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Corroded", source: "Player's Handbook", leveled: true, maxLevel: 3, implies: [], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Deafened", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: [], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Diseased", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: [], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Exhaustion", source: "Player's Handbook", leveled: true, maxLevel: 6, implies: [], contextual: false, beneficial: false, durationSpec: { anchor: "untilLongRest" }, turnTriggers: [] },
+  { name: "Frightened", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: [], contextual: true, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Grappled", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: [], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  {
+    name: "Ignited",
+    source: "Player's Handbook",
+    leveled: false,
+    maxLevel: 1,
+    implies: [],
+    contextual: false,
+    beneficial: false,
+    durationSpec: { anchor: "onUse" },
+    turnTriggers: [
+      { timing: "endOfTurn", actor: "self", kind: "damage", note: "Take Ignited fire damage at the end of each turn until doused." }
+    ]
+  },
+  { name: "Incapacitated", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: [], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Invisible", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: [], contextual: true, beneficial: true, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Paralyzed", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: ["Incapacitated"], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Petrified", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: ["Incapacitated"], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Poisoned", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: [], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Prone", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: [], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Restrained", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: ["Slowed"], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Shocked", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: [], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Slowed", source: "Player's Handbook", leveled: true, maxLevel: 4, implies: [], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Stunned", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: ["Incapacitated"], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Unconscious", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: ["Incapacitated", "Prone"], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] },
+  { name: "Weakened", source: "Player's Handbook", leveled: false, maxLevel: 1, implies: [], contextual: false, beneficial: false, durationSpec: { anchor: "onUse" }, turnTriggers: [] }
+].map(def => ({ ...def, rules: globalThis.SW5E_CONDITIONS[def.name] || "" }));
+
+globalThis.SW5E_CONDITION_DEFS_BY_NAME = new Map(globalThis.SW5E_CONDITION_DEFS.map(d => [d.name.toLowerCase(), d]));

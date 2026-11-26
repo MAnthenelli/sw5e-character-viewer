@@ -14,3 +14,9 @@ An offline-first vanilla HTML/CSS/JS PWA combat sheet for Star Wars 5e (`0.7.6` 
 
 - **Unit tests:** `node tests/unit.cjs` (49 tests covering imports, SW5e PHB core rules, combat options, species, backgrounds, weapon/armor properties, and all 465 powers).
 - **Rebuild catalogs from source archive:** `python3 tools/build-catalogs.py /path/to/sw5e_source_complete.zip`
+
+## Automated QA Gates (§9)
+
+- `node tests/run-all.cjs` — Fast smoke & formula-parity check (< 2s)
+- `node tests/qa-invariants.cjs` — Catalog-wide static & behavioral invariants across all 10 classes, 139 archetypes, and 465 powers (< 0.5s)
+- `node tests/qa-chromium.cjs [--shots ./qa-shots]` — Synthetic 10-class headless Chromium DOM, mobile (`360px`/`430px`), light-mode, and behavioral E2E gate (~2s)

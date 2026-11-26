@@ -6,6 +6,42 @@ function normalizeLoadedCharacter(character) {
   if (!character?.profile || !character?.session) return null;
   const {profile, session} = character;
   if (!profile.baseScores) profile.baseScores = {...profile.scores};
+  if (!Array.isArray(profile.classes) || !profile.classes.length) {
+    if (profile.className) {
+      const baseRec = typeof classRecord === "function" ? classRecord(profile.className) : null;
+      profile.classes = [{
+        name: profile.className,
+        levels: Number(profile.level) || 1,
+        archetype: session.approach || profile.approach || "",
+        hitDie: profile.hitDie || baseRec?.hitDie || 8,
+        archetypeFlavor: profile.archetypeFlavor || baseRec?.archetypeFlavorName || "Archetype",
+        isStarting: true
+      }];
+    } else {
+      profile.classes = [];
+    }
+  }
+  if (!session.approaches || typeof session.approaches !== "object") {
+    session.approaches = {};
+  }
+  if (session.approach && profile.className && !session.approaches[profile.className]) {
+    session.approaches[profile.className] = session.approach;
+  }
+  if (!session.hitDiceByDie || typeof session.hitDiceByDie !== "object") {
+    const totals = {};
+    for (const c of profile.classes) {
+      const key = "d" + (c.hitDie || (typeof classRecord === "function" ? classRecord(c.name)?.hitDie : 8) || 8);
+      totals[key] = (totals[key] || 0) + (Number(c.levels || c.level) || 0);
+    }
+    if (Object.keys(totals).length === 1 && typeof session.hitDice === "number") {
+      const onlyKey = Object.keys(totals)[0];
+      session.hitDiceByDie = { [onlyKey]: clamp(session.hitDice, 0, totals[onlyKey]) };
+    } else if (Object.keys(totals).length) {
+      session.hitDiceByDie = { ...totals };
+    } else {
+      session.hitDiceByDie = {};
+    }
+  }
   if (!profile.baseTraining) profile.baseTraining = {...profile.training};
   if (!profile.explicitTraining) profile.explicitTraining = {};
   if (!Array.isArray(session.consumableEffects)) session.consumableEffects = [];
@@ -29,9 +65,20 @@ function normalizeLoadedCharacter(character) {
   if (typeof session.tempForce !== "number") session.tempForce = 0;
   if (typeof session.tempTech !== "number") session.tempTech = 0;
   if (!Array.isArray(session.classOptions)) session.classOptions = [];
+  if (!session.classOptionChoices || typeof session.classOptionChoices !== "object") session.classOptionChoices = {};
+  if (!session.speciesTraitChoices || typeof session.speciesTraitChoices !== "object") session.speciesTraitChoices = {};
+  if (!session.backgroundChoices || typeof session.backgroundChoices !== "object") session.backgroundChoices = {};
+  if (!session.archetypeFeatureChoices || typeof session.archetypeFeatureChoices !== "object") session.archetypeFeatureChoices = {};
+  if (!session.abilityAdjustments || typeof session.abilityAdjustments !== "object") session.abilityAdjustments = {};
+  if (!session.skillOverrides || typeof session.skillOverrides !== "object") session.skillOverrides = {};
+  if (!session.statModifiers || typeof session.statModifiers !== "object") session.statModifiers = {};
   if (typeof session.classImprovementEnabled !== "boolean") session.classImprovementEnabled = false;
   if (typeof session.superiorityUsed !== "number") session.superiorityUsed = 0;
   if (typeof session.concentration !== "string") session.concentration = "";
+  if (typeof session.sizeOverride !== "string") session.sizeOverride = "";
+  if (typeof session.classChoice !== "string") session.classChoice = "";
+  if (typeof session.channelForceChoice !== "string") session.channelForceChoice = "";
+  if (typeof session.signaturePower !== "string") session.signaturePower = "";
   if (typeof session.forceAffinity !== "string") {
     const cfNames = (profile.customFeatures || []).map(f => String(f.name || "").toLowerCase());
     session.forceAffinity = cfNames.some(n => /\bashla\b/.test(n)) ? "Ashla"
@@ -39,8 +86,14 @@ function normalizeLoadedCharacter(character) {
       : cfNames.some(n => /\bbogan\b/.test(n)) ? "Bogan" : "";
   }
   if (!session.highLevelCasting || typeof session.highLevelCasting !== "object") {
-    session.highLevelCasting = {level6: false, level7: false, level8: false, level9: false};
+    session.highLevelCasting = {level4: false, level5: false, level6: false, level7: false, level8: false, level9: false};
   }
+  for (const item of session.equipped || []) {
+    // Turn and attack scope cannot be recovered from the old persisted toggles.
+    delete item.defensiveActive;
+    delete item.direActive;
+  }
+  if (typeof reconcileCharacterChoices === "function") reconcileCharacterChoices(profile, session);
   return character;
 }
 
@@ -99,7 +152,7 @@ function save() {
   try {
     if (typeof sessionStorage !== "undefined") {
       sessionStorage.setItem(storageKey, slimPayload(5));
-      notice = "Saved in tab session (" + (lastErr?.name || "localStorage blocked") + ") — survives reload; use Export Backup to keep permanently.";
+      notice = "Saved for this session — use Sheet ▾ → Export backup to save permanently.";
       return;
     }
   } catch {}
@@ -107,11 +160,11 @@ function save() {
   try {
     if (typeof window !== "undefined") {
       window.name = windowNamePrefix + slimPayload(0);
-      notice = "Saved in tab memory (" + (lastErr?.name || "storage blocked") + ") — survives reload; use Export Backup to keep permanently.";
+      notice = "Saved in tab memory  — survives reload; use Export Backup to keep permanently.";
       return;
     }
   } catch {}
-  notice = "Browser storage unavailable (" + (lastErr?.name || "error") + "). Use Export Backup to save.";
+  notice = "Browser storage unavailable (" + "browser storage restricted" + "). Use Export Backup to save.";
 }
 
 function transact(label, change) {
@@ -119,7 +172,9 @@ function transact(label, change) {
   app.character = change(structuredClone(app.character));
   app.history.push({label, character: previous});
   if (app.history.length > historyLimit) app.history.shift();
-  notice = label;
+  const concNote = app.character?.session?._lastConcentrationPrompt;
+  if (concNote) delete app.character.session._lastConcentrationPrompt;
+  notice = concNote ? (label + " · " + concNote) : label;
   save();
   if (typeof render === "function") render();
 }

@@ -14,4 +14,3 @@ function rollMode(advantage, disadvantage, conditional = false) {
 function displayRollBadge(node, advantage, disadvantage, conditional) {
   node.insertAdjacentHTML("beforeend", rollBadge(rollMode(advantage, disadvantage, conditional)));
 }
-

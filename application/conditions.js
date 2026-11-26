@@ -16,16 +16,31 @@ const conditionFields = {
   "Enhancement Injection": ["Strength / Constitution check & save bonus (maneuver modifier)", 10],
   "Primal Endurance": ["AC bonus (rolled superiority die)", 12],
   "Dual Wield AC": ["AC bonus (+1 per forgone TWF attack)", 3],
+  "Blade Focus: Parry": ["AC bonus (+1 per forgone attack)", 4],
   "One Step Ahead": ["Initiative bonus (rolled superiority die)", 12],
   "Parry": ["Melee damage reduction (superiority die + maneuver modifier)", 22],
   "Self-Preservation": ["Saving throw bonus (rolled superiority die)", 12],
   "Firewall": ["Tech save bonus (rolled superiority die)", 12],
-  "One with the Force": ["Concentration CON save bonus (rolled superiority die)", 12],
+  "One with the Force": ["Constitution concentration save bonus (rolled superiority die)", 12],
   "Heads Up": ["Saving throw bonus (ally superiority die)", 12],
   "Targeted Strike": ["Attack & damage bonus (ally superiority die)", 12],
+  "Assist": ["Medicine check bonus (rolled superiority die)", 12],
   "Conceal": ["Stealth check bonus (rolled superiority die)", 12],
+  "Deceive": ["Deception check bonus (rolled superiority die)", 12],
+  "Empathize": ["Insight check bonus (rolled superiority die)", 12],
   "Flex": ["Athletics check bonus (rolled superiority die)", 12],
+  "Flourish": ["Sleight of Hand check bonus (rolled superiority die)", 12],
+  "Handle Animal": ["Animal Handling check bonus (rolled superiority die)", 12],
+  "Investigate": ["Investigation check bonus (rolled superiority die)", 12],
+  "Naturalize": ["Nature check bonus (rolled superiority die)", 12],
   "Perceive": ["Perception check bonus (rolled superiority die)", 12],
+  "Perform": ["Performance check bonus (rolled superiority die)", 12],
+  "Persuade": ["Persuasion check bonus (rolled superiority die)", 12],
+  "Pilot": ["Piloting check bonus (rolled superiority die)", 12],
+  "Program": ["Technology check bonus (rolled superiority die)", 12],
+  "Study": ["Lore check bonus (rolled superiority die)", 12],
+  "Survive": ["Survival check bonus (rolled superiority die)", 12],
+  "Threaten": ["Intimidation check bonus (rolled superiority die)", 12],
   "Tumble": ["Acrobatics check bonus (rolled superiority die)", 12],
   "Assess the Situation": ["Perception/Investigation bonus (rolled superiority die)", 12],
   "Wild Senses": ["Perception/Survival bonus (rolled superiority die)", 12],
@@ -112,6 +127,9 @@ const classCombatStates = [
     name: "Aura of Vigor (Guardian)",
     group: "classStates",
     kind: "state",
+    turnTriggers: [
+      { timing: "startOfTurn", actor: "self", kind: "tempHP", inArea: true, note: "Gain temporary HP equal to the Guardian's Wisdom or Charisma modifier (minimum 1)." }
+    ],
     preview: "Guardian Aura: gain temporary HP equal to Wisdom or Charisma modifier at start of turn.",
     rules: "Whenever a friendly creature starts its turn within the Guardian Aura, it gains temporary hit points equal to the Guardian's Wisdom or Charisma modifier (minimum 1)."
   },
@@ -130,7 +148,7 @@ const classCombatStates = [
     kind: "state",
     choiceKind: "anySkill",
     preview: "Scholar Sage Advice: gain proficiency in the chosen skill for 1 hour.",
-    rules: "A Scholar advised you on a chosen skill: you gain proficiency in that skill for 1 hour (or add half/full proficiency bonus on first check with Expert's/Master's Advice)."
+    rules: "A Scholar advised you on a chosen skill: you gain proficiency in that skill for 1 hour (or add half/full Critical Analysis ability modifier on first check with Expert's/Master's Advice)."
   },
   {
     id: "state:adaptability-routine",
@@ -162,7 +180,7 @@ const classCombatStates = [
     name: "Nomad's Routine",
     group: "classStates",
     kind: "state",
-    preview: "Scout Routine: advantage on CON saves against unenhanced exhaustion and extreme environments.",
+    preview: "Scout Routine: advantage on Constitution saves against unenhanced exhaustion and extreme environments.",
     rules: "While within the Scout's routine radius, you have advantage on Constitution saving throws to avoid exhaustion from unenhanced sources."
   },
   {
@@ -210,7 +228,7 @@ const classCombatStates = [
     name: "Dodging",
     group: "classStates",
     kind: "state",
-    preview: "Incoming attacks have disadvantage; advantage on DEX saving throws.",
+    preview: "Incoming attacks have disadvantage; advantage on Dexterity saving throws.",
     rules: "Until the start of your next turn, any attack roll made against you has disadvantage if you can see the attacker, and you make Dexterity saving throws with advantage."
   },
   {
@@ -258,7 +276,7 @@ const classCombatStates = [
     name: "Ranger’s Quarry",
     group: "classStates",
     kind: "state",
-    preview: "Marked target; add Quarry die on weapon/tech attacks and track with advantage.",
+    preview: "Marked target; add Quarry die once per turn on weapon attacks and track with advantage.",
     rules: "Scout Ranger's Quarry: You have advantage on Wisdom (Perception) or Wisdom (Survival) checks to find the target, and once per turn you can apply your Ranger's Quarry bonus."
   },
   {
@@ -310,8 +328,8 @@ const ongoingPowerEffects = (typeof SW5E_POWERS !== "undefined" ? SW5E_POWERS : 
   });
 
 const ongoingManeuverEffects = [
-  {id: "man:body-over-bother", name: "Body Over Bother", group: "maneuvers", kind: "maneuver", preview: "STR, DEX, or CON saving throws use your highest physical ability modifier (STR/DEX/CON).", rules: "When you are forced to make a Strength, Dexterity, or Constitution saving throw, you can expend a superiority die to change the saving throw ability to your maneuver ability modifier."},
-  {id: "man:mind-over-matter", name: "Mind Over Matter", group: "maneuvers", kind: "maneuver", preview: "INT, WIS, or CHA saving throws use your highest mental ability modifier (INT/WIS/CHA).", rules: "When you are forced to make an Intelligence, Wisdom, or Charisma saving throw, you can expend a superiority die to change the saving throw ability to your maneuver ability modifier."},
+  {id: "man:body-over-bother", name: "Body Over Bother", group: "maneuvers", kind: "maneuver", preview: "Strength, Dexterity, or Constitution saving throws use your highest physical ability modifier.", rules: "When you are forced to make a Strength, Dexterity, or Constitution saving throw, you can expend a superiority die to change the saving throw ability to your maneuver ability modifier."},
+  {id: "man:mind-over-matter", name: "Mind Over Matter", group: "maneuvers", kind: "maneuver", preview: "Intelligence, Wisdom, or Charisma saving throws use your highest mental ability modifier.", rules: "When you are forced to make an Intelligence, Wisdom, or Charisma saving throw, you can expend a superiority die to change the saving throw ability to your maneuver ability modifier."},
   {id: "man:evasive-footwork", name: "Evasive Footwork", group: "maneuvers", kind: "maneuver", preview: "+N AC (rolled superiority die) until you stop moving.", rules: "When you move, you can expend one superiority die, rolling the die and adding the number rolled to your AC until you stop moving."},
   {id: "man:steady-the-nerves", name: "Steady the Nerves", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to all saving throws until end of next turn.", rules: "Until the end of the maneuver user's next turn, you have a bonus to any saving throws you make equal to the superiority die rolled."},
   {id: "man:precise-movements", name: "Precise Movements", group: "maneuvers", kind: "maneuver", preview: "+5 × die ft speed and move through hostile spaces as difficult terrain.", rules: "Your speed increases by 5 times the superiority die rolled, and you can move through the space of hostile creatures as if it were difficult terrain."},
@@ -339,9 +357,23 @@ const ongoingManeuverEffects = [
   {id: "man:one-with-the-force", name: "One with the Force", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to a Constitution saving throw to maintain Force concentration.", rules: "Once per turn on a Constitution saving throw to maintain concentration on a force power: add the rolled superiority die."},
   {id: "man:heads-up", name: "Heads Up", group: "maneuvers", kind: "maneuver", preview: "+N (ally superiority die) to your saving throw.", rules: "An ally used Heads Up to add their rolled superiority die to your saving throw."},
   {id: "man:targeted-strike", name: "Targeted Strike", group: "maneuvers", kind: "maneuver", preview: "+N (ally superiority die) to your next attack roll and damage roll.", rules: "An ally used Targeted Strike to add their rolled superiority die to your attack roll and damage roll."},
+  {id: "man:assist", name: "Assist", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Wisdom (Medicine) checks.", rules: "When you make a Medicine check, expend a superiority die and add it to the roll."},
   {id: "man:conceal", name: "Conceal", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Dexterity (Stealth) checks.", rules: "When you make a Stealth check, expend a superiority die and add it to the roll."},
+  {id: "man:deceive", name: "Deceive", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Charisma (Deception) checks.", rules: "When you make a Deception check, expend a superiority die and add it to the roll."},
+  {id: "man:empathize", name: "Empathize", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Wisdom (Insight) checks.", rules: "When you make an Insight check, expend a superiority die and add it to the roll."},
   {id: "man:flex", name: "Flex", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Strength (Athletics) checks.", rules: "When you make an Athletics check, expend a superiority die and add it to the roll."},
+  {id: "man:flourish", name: "Flourish", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Dexterity (Sleight of Hand) checks.", rules: "When you make a Sleight of Hand check, expend a superiority die and add it to the roll."},
+  {id: "man:handle-animal", name: "Handle Animal", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Wisdom (Animal Handling) checks.", rules: "When you make an Animal Handling check, expend a superiority die and add it to the roll."},
+  {id: "man:investigate", name: "Investigate", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Intelligence (Investigation) checks.", rules: "When you make an Investigation check, expend a superiority die and add it to the roll."},
+  {id: "man:naturalize", name: "Naturalize", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Intelligence (Nature) checks.", rules: "When you make a Nature check, expend a superiority die and add it to the roll."},
   {id: "man:perceive", name: "Perceive", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Wisdom (Perception) checks.", rules: "When you make a Perception check, expend a superiority die and add it to the roll."},
+  {id: "man:perform", name: "Perform", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Charisma (Performance) checks.", rules: "When you make a Performance check, expend a superiority die and add it to the roll."},
+  {id: "man:persuade", name: "Persuade", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Charisma (Persuasion) checks.", rules: "When you make a Persuasion check, expend a superiority die and add it to the roll."},
+  {id: "man:pilot", name: "Pilot", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Intelligence (Piloting) checks.", rules: "When you make a Piloting check, expend a superiority die and add it to the roll."},
+  {id: "man:program", name: "Program", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Intelligence (Technology) checks.", rules: "When you make a Technology check, expend a superiority die and add it to the roll."},
+  {id: "man:study", name: "Study", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Intelligence (Lore) checks.", rules: "When you make a Lore check, expend a superiority die and add it to the roll."},
+  {id: "man:survive", name: "Survive", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Wisdom (Survival) checks.", rules: "When you make a Survival check, expend a superiority die and add it to the roll."},
+  {id: "man:threaten", name: "Threaten", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Charisma (Intimidation) checks.", rules: "When you make an Intimidation check, expend a superiority die and add it to the roll."},
   {id: "man:tumble", name: "Tumble", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Dexterity (Acrobatics) checks.", rules: "When you make an Acrobatics check, expend a superiority die and add it to the roll."},
   {id: "man:assess-the-situation", name: "Assess the Situation", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Perception or Investigation checks.", rules: "Bonus action: make a Wisdom (Perception) or Intelligence (Investigation) check adding the rolled superiority die."},
   {id: "man:wild-senses", name: "Wild Senses", group: "maneuvers", kind: "maneuver", preview: "+N (rolled superiority die) to Perception or Survival checks.", rules: "Add the rolled superiority die to a Wisdom (Perception) or Wisdom (Survival) check with your companion."},
@@ -354,11 +386,13 @@ const combatOptionEffects = [
   {id: "opt:defense-mark", name: "Defense Mark", group: "classStates", kind: "state", preview: "Defense Style: reduce damage from marked target by ½ Strength/Constitution modifier (minimum 1).", rules: "While wearing medium or heavy armor with which you are proficient, damage dealt to you by the marked target is reduced by half your Strength or Constitution modifier (minimum 1, floor 1 damage)."},
   {id: "opt:secured-shield", name: "Secured: Light Shield", group: "classStates", kind: "state", preview: "Secured Style: treating fixed weapon as a light shield (+1 AC; cannot attack with it).", rules: "Until the start of your next turn, you treat your fixed weapon as a light shield (+1 AC) and cannot make attacks with it."},
   {id: "opt:dual-wield-ac", name: "Dual Wield AC", group: "classStates", kind: "state", preview: "Dual Wield Mastery: +1 AC per forgone Two-Weapon Fighting attack until next turn.", rules: "For each Two-Weapon Fighting attack you forgo, gain +1 AC until the start of your next turn."},
-  {id: "opt:defensive-stance", name: "Defensive Stance", group: "classStates", kind: "state", preview: "Sentinel Mastery: special OA reactions equal to proficiency bonus until next turn.", rules: "While in your defensive stance, you have a number of special reactions equal to your proficiency bonus that you can only use to make opportunity attacks."},
+  {id: "opt:defensive-stance", name: "Defensive Stance", group: "classStates", kind: "state", preview: "Sentinel Mastery: special opportunity attack reactions equal to proficiency bonus until start of next turn.", rules: "While in your defensive stance, you have a number of special reactions equal to your proficiency bonus that you can only use to make opportunity attacks."},
   {id: "opt:defensive-ball", name: "Defensive Ball", group: "classStates", kind: "state", preview: "Colicoid: +½ proficiency bonus to AC until start of next turn (on Dash, no shield).", rules: "When you take the Dash action while not wielding a shield, gain a bonus to AC equal to half your proficiency bonus until the start of your next turn."},
   {id: "opt:trakata-distracted", name: "Trakata Form (Distracted)", group: "maneuvers", kind: "state", preview: "Debuff: disadvantage on your next attack roll against the Trakata user.", rules: "A creature flourished its lightsaber with Trakata Form; you have disadvantage on the next attack roll you make against it."},
   {id: "opt:duelist-mastery-ac", name: "Duelist Mastery (+prof AC)", group: "classStates", kind: "state", preview: "Duelist Mastery: +proficiency bonus to AC against one melee attack.", rules: "Reaction while wielding a one-handed weapon: add your proficiency bonus to your AC against one melee attack."},
-  {id: "opt:secured-mastery-ac", name: "Secured Mastery (+prof AC)", group: "classStates", kind: "state", preview: "Secured Mastery: +proficiency bonus to AC against one attack (forgo fixed weapon attack).", rules: "Forgo an attack with a fixed weapon to add your proficiency bonus to your AC against one attack."}
+  {id: "opt:secured-mastery-ac", name: "Secured Mastery (+prof AC)", group: "classStates", kind: "state", preview: "Secured Mastery: +proficiency bonus to AC against one attack (forgo fixed weapon attack).", rules: "Forgo an attack with a fixed weapon to add your proficiency bonus to your AC against one attack."},
+  {id: "opt:blade-focus-parry", name: "Blade Focus: Parry", group: "classStates", kind: "state", durationSpec: {anchor: "startOfOwnNextTurn"}, preview: "Blade Focus: +1 AC per forgone attack until the start of your next turn.", rules: "When you take the Attack action while wielding a proficient blade weapon, forgo one or more attacks to gain +1 AC per forgone attack until the start of your next turn."},
+  {id: "opt:polearm-focus-choke-up", name: "Polearm Focus: Choke Up", group: "classStates", kind: "state", durationSpec: {anchor: "startOfOwnNextTurn"}, preview: "Polearm Focus: +5 ft reach until the start of your next turn.", rules: "When you take the Attack action while wielding a proficient polearm weapon, forgo one attack to increase your reach by 5 feet until the start of your next turn."}
 ];
 
 const effectCatalog = [
@@ -383,7 +417,7 @@ const effectCatalog = [
     preview: "Half damage from " + type + " damage sources.",
     rules: "You have resistance to " + type + " damage from this active effect."
   })),
-  ...["Charmed", "Diseased", "Frightened", "Paralyzed", "Poisoned", "Shocked", "Stunned"].map(cond => ({
+  ...knownConditions.filter(c => c !== "Invisible").map(cond => ({
     id: "imm:" + cond.toLowerCase(),
     name: "Immune to " + cond,
     group: "immunities",
@@ -406,11 +440,62 @@ const effectGroupLabels = {
 
 const recognizedCondition = text => knownConditions.find(name => name.toLowerCase() === String(text).toLowerCase());
 
+function resolveEffectTurnMeta(name, extra = {}) {
+  const hasExplicitDur = Boolean(extra && extra.durationSpec && typeof extra.durationSpec === "object" && extra.durationSpec.anchor);
+  const hasExplicitTrig = Boolean(extra && Array.isArray(extra.turnTriggers) && extra.turnTriggers.length);
+  if (hasExplicitDur && hasExplicitTrig) {
+    return { durationSpec: extra.durationSpec, turnTriggers: extra.turnTriggers };
+  }
+  const key = typeof normalizeName === "function" ? normalizeName(name) : String(name || "").trim().toLowerCase();
+  if (!key) return {};
+  const candidates = [];
+  if (typeof SW5E_CONDITION_DEFS !== "undefined" && Array.isArray(SW5E_CONDITION_DEFS)) {
+    const cd = SW5E_CONDITION_DEFS.find(d => (typeof normalizeName === "function" ? normalizeName(d.name) : String(d.name || "").toLowerCase()) === key);
+    if (cd) candidates.push(cd);
+  }
+  if (typeof classCombatStates !== "undefined" && Array.isArray(classCombatStates)) {
+    const cs = classCombatStates.find(d => (typeof normalizeName === "function" ? normalizeName(d.name) : String(d.name || "").toLowerCase()) === key);
+    if (cs) candidates.push(cs);
+  }
+  if (typeof combatOptionEffects !== "undefined" && Array.isArray(combatOptionEffects)) {
+    const coe = combatOptionEffects.find(d => (typeof normalizeName === "function" ? normalizeName(d.name) : String(d.name || "").toLowerCase()) === key);
+    if (coe) candidates.push(coe);
+  }
+  if (typeof powerRule === "function") { const r = powerRule(name); if (r) candidates.push(r); }
+  if (typeof maneuverRule === "function") { const r = maneuverRule(name); if (r) candidates.push(r); }
+  if (typeof lightsaberFormRule === "function") { const r = lightsaberFormRule(name); if (r) candidates.push(r); }
+  if (typeof fightingStyleRule === "function") { const r = fightingStyleRule(name); if (r) candidates.push(r); }
+  if (typeof fightingMasteryRule === "function") { const r = fightingMasteryRule(name); if (r) candidates.push(r); }
+  if (typeof classOptionRule === "function") { const r = classOptionRule(name); if (r) candidates.push(r); }
+  if (typeof featRule === "function") { const r = featRule(name); if (r) candidates.push(r); }
+  let durationSpec = hasExplicitDur ? extra.durationSpec : null;
+  let turnTriggers = hasExplicitTrig ? extra.turnTriggers : null;
+  for (const rec of candidates) {
+    if (!durationSpec && rec?.durationSpec?.anchor) durationSpec = rec.durationSpec;
+    if (!turnTriggers && Array.isArray(rec?.turnTriggers) && rec.turnTriggers.length) turnTriggers = rec.turnTriggers;
+    if (durationSpec && turnTriggers) break;
+  }
+  const out = {};
+  if (durationSpec) out.durationSpec = durationSpec;
+  if (Array.isArray(turnTriggers) && turnTriggers.length) out.turnTriggers = turnTriggers;
+  return out;
+}
+
 function conditionEntry(name, value, context, extra = {}) {
-  return {name, value, context, ...extra};
+  const out = { name, value, context, ...extra };
+  const meta = resolveEffectTurnMeta(name, out);
+  if (!out.durationSpec && meta.durationSpec) out.durationSpec = meta.durationSpec;
+  if ((!Array.isArray(out.turnTriggers) || !out.turnTriggers.length) && meta.turnTriggers?.length) {
+    out.turnTriggers = meta.turnTriggers;
+  }
+  return out;
 }
 
 function conditionState(session, profile = null) {
+  if (typeof _cachedFor === "function") return _cachedFor("conditionState", profile, session, () => _conditionStateUncached(session, profile));
+  return _conditionStateUncached(session, profile);
+}
+function _conditionStateUncached(session, profile = null) {
   const entries = session.effects || [];
   const immunities = new Set();
   const resistances = new Set();
@@ -437,7 +522,15 @@ function conditionState(session, profile = null) {
   }
   for (const dt of removedResistances) resistances.delete(dt);
 
-  const activeEntries = entries.filter(entry => !immunities.has(entry.name));
+  const immLower = new Set([...immunities].map(x => String(x || "").toLowerCase()));
+  if (typeof resolveDefenseEffects === "function") {
+    for (const ci of resolveDefenseEffects(profile, session).conditionImmunities || []) {
+      const cName = String(ci.condition || "");
+      if (cName) { immunities.add(cName); immLower.add(cName.toLowerCase()); }
+    }
+  }
+  const isImmuneCond = name => immunities.has(name) || immLower.has(String(name || "").toLowerCase());
+  const activeEntries = entries.filter(entry => !isImmuneCond(entry.name));
   const powerConditions = new Set();
   let powerSlowed = 0;
   let powerSpeedZero = false;
@@ -452,9 +545,9 @@ function conditionState(session, profile = null) {
     const eff = p?.effects;
     if (!eff || (eff.charges?.perTurn && entry.surgeActive === false)) continue;
     for (const cond of eff.appliesConditions || []) {
-      if (!immunities.has(cond)) powerConditions.add(cond);
+      if (!isImmuneCond(cond)) powerConditions.add(cond);
     }
-    if (eff.choiceKind === "blindOrDeafen" && entry.choice && !immunities.has(entry.choice)) {
+    if (eff.choiceKind === "blindOrDeafen" && entry.choice && !isImmuneCond(entry.choice)) {
       powerConditions.add(entry.choice);
     }
     if (eff.slowedLevels) powerSlowed += eff.slowedLevels;
@@ -465,6 +558,13 @@ function conditionState(session, profile = null) {
     if (eff.incomingDisadvantage) powerIncomingDisadv = true;
     if (eff.ignoreExhaustion) ignoreExhaustion = true;
   }
+  if (isImmuneCond("Exhaustion")) ignoreExhaustion = true;
+  if (!ignoreExhaustion && typeof resolveDefenseEffects === "function") {
+    const defEff = resolveDefenseEffects(profile, session);
+    if (defEff.conditionImmunities.some(ci => String(ci.condition || "").toLowerCase() === "exhaustion")) {
+      ignoreExhaustion = true;
+    }
+  }
 
   const has = name => activeEntries.some(entry => normalizeName(entry.name) === normalizeName(name)) || powerConditions.has(name);
   const sum = (name, max) => Math.min(max, activeEntries.filter(entry => entry.name === name).reduce((n, entry) => n + (entry.value || 1), 0));
@@ -473,7 +573,7 @@ function conditionState(session, profile = null) {
   const irradiateLevel = has("Irradiate") ? 1 : 0;
   const rawExhaustion = session.exhaustion || 0;
   const exhaustion = ignoreExhaustion ? 0 : Math.min(5, rawExhaustion + irradiateLevel);
-  const dead = rawExhaustion >= 6 || (!controlPain && (session.death?.failures || 0) >= 3);
+  const dead = (!ignoreExhaustion && rawExhaustion >= 6) || (!controlPain && (session.death?.failures || 0) >= 3);
   const unconscious = (!controlPain && session.hp === 0) || has("Unconscious");
   const stunned = has("Stunned");
   const petrified = has("Petrified");
@@ -484,28 +584,69 @@ function conditionState(session, profile = null) {
   const incapacitated = dead || unconscious || stunned || petrified || paralyzed || has("Incapacitated");
   const prone = unconscious || has("Prone");
   const dodging = has("Dodging") && !incapacitated;
+  const grappled = has("Grappled");
+  const charmed = has("Charmed");
+  const restrained = has("Restrained");
+  const ignited = has("Ignited")
+    ? Math.max(1, ...activeEntries.filter(e => normalizeName(e.name) === "ignited").map(e => Number(e.value) || 1))
+    : 0;
   if (petrified) {
+    immunities.add("poison");
     immunities.add("Poisoned");
     immunities.add("Diseased");
   }
+  const speedZeroSources = [
+    unconscious && "Unconscious",
+    stunned && "Stunned",
+    petrified && "Petrified",
+    paralyzed && "Paralyzed",
+    grappled && "Grappled",
+    powerSpeedZero && "Active power"
+  ].filter(Boolean);
+  const operativeLevel = prof
+    ? (typeof classLevelOf === "function" ? classLevelOf(prof, "Operative") : (normalizeName(prof.className) === "operative" ? (prof.level || 1) : 0))
+    : 0;
+  const elusiveSuppresses = !incapacitated && operativeLevel >= 18;
+  const incomingAdvantageSources = elusiveSuppresses ? [] : [
+    blinded && "Blinded",
+    unconscious && "Unconscious",
+    stunned && "Stunned",
+    petrified && "Petrified",
+    paralyzed && "Paralyzed",
+    restrained && "Restrained",
+    powerIncomingAdv && "Active power",
+    activeEntries.some(e => normalizeName(e.name) === "distracting blow") && "Distracting Blow"
+  ].filter(Boolean);
+  const incomingDisadvantageSources = [
+    invisible && "Invisible",
+    dodging && "Dodging",
+    has("Hidden") && "Hidden",
+    has("Guarded") && "Guarded",
+    powerIncomingDisadv && "Active power"
+  ].filter(Boolean);
   return {
-    dead, unconscious, incapacitated, prone, petrified, dodging,
+    dead, unconscious, incapacitated, prone, petrified, paralyzed, stunned, dodging,
+    charmed, grappled, ignited,
     poisoned: has("Poisoned") && !petrified,
+    diseased: has("Diseased") && !petrified,
     blinded, sightBlocked: has("Blinded"), deafened: has("Deafened"),
     invisible, frightened: context("Frightened") || powerConditions.has("Frightened"),
-    restrained: has("Restrained"), shocked: has("Shocked"), weakened: has("Weakened"),
-    noReactions: has("Shocked") || powerNoReactions || activeEntries.some(e => normalizeName(e.name) === "befogging ichor"),
+    restrained, shocked: has("Shocked"), weakened: has("Weakened"),
+    noReactions: (has("Shocked") && !(prof && typeof resolveDefenseEffects === "function" && resolveDefenseEffects(prof, session).combatTraits.some(ct => ct.kind === "shockedReactionChoice"))) || powerNoReactions || activeEntries.some(e => normalizeName(e.name) === "befogging ichor" || normalizeName(e.name) === "imbalanced shield"),
     noHealing: powerNoHealing || activeEntries.some(e => normalizeName(e.name) === "neuroblock"),
     ignoreExhaustion,
     immunities,
     resistances: [...resistances],
     automaticSaveFailure: unconscious || stunned || petrified || paralyzed,
-    speedZero: unconscious || stunned || petrified || paralyzed || powerSpeedZero || has("Grappled") || has("Steady Aim"),
-    slowed: has("Restrained") || exhaustion >= 5 ? 4 : Math.min(4, sum("Slowed", 4) + powerSlowed + Number(exhaustion >= 2)),
+    speedZero: speedZeroSources.length > 0,
+    speedZeroSources,
+    slowed: restrained || exhaustion >= 5 ? 4 : Math.min(4, sum("Slowed", 4) + powerSlowed + Number(exhaustion >= 2)),
     corroded: Math.max(0, sum("Corroded", 3) - (prof && typeof characterTraits === "function" ? (characterTraits(prof, session).corrodedIgnore || 0) : 0)),
     exhaustion,
-    incomingAdvantage: (!incapacitated && prof && normalizeName(prof.className) === "operative" && (prof.level || 1) >= 18) ? false : (blinded || unconscious || stunned || petrified || paralyzed || has("Restrained") || powerIncomingAdv || activeEntries.some(e => normalizeName(e.name) === "distracting blow")),
-    incomingDisadvantage: invisible || dodging || has("Hidden") || has("Guarded") || powerIncomingDisadv,
+    incomingAdvantage: incomingAdvantageSources.length > 0,
+    incomingAdvantageSources,
+    incomingDisadvantage: incomingDisadvantageSources.length > 0,
+    incomingDisadvantageSources,
     nearbyCritical: unconscious || paralyzed
   };
 }
@@ -529,51 +670,78 @@ function movementSpeed(base, conditions, slowedStep = null) {
   return Math.max(0, base - [0, 15, 25, 30][conditions.slowed]);
 }
 
+function dedupeSources(list) {
+  const out = [];
+  const seen = new Set();
+  for (const raw of (list || [])) {
+    const s = String(raw || "").trim();
+    if (!s) continue;
+    const k = s.toLowerCase();
+    if (seen.has(k)) continue;
+    seen.add(k);
+    out.push(s);
+  }
+  return out;
+}
+
 function checkMode(profile, session, ability, skill, armor) {
   const c = conditionState(session, profile);
   const traits = characterTraits(profile, session);
   const effMods = activeEffectModifiers(profile, session);
   const advSources = [];
   if (session.rage && ability === "Strength") advSources.push("Rage");
-  if (session.rage && ability === "Dexterity" && typeof hasClassOption === "function" && hasClassOption(profile, session, "Varactyl's Instinct")) advSources.push("Varactyl's Instinct");
+  // Varactyl's Instinct DEX check advantage is collected via effect-engine conditionalCheckMod
   if (skill === "Intimidation" && traits.maniacalRage) advSources.push("Maniacal Rage");
   if (effMods.allCheckAdv) advSources.push("Active power");
   if (effMods.abilityCheckAdv?.has(ability)) advSources.push("Active power");
   if (skill === "Stealth" && effMods.stealthAdv) advSources.push("Synchronicity");
+  const skillEff = typeof resolveSkillEffects === "function" ? resolveSkillEffects(profile, session, skill, ability, c) : null;
+  if (skillEff) {
+    for (const s of skillEff.advantage) {
+      if (session.rage && ability === "Strength" && normalizeName(s) === "berserker") continue;
+      advSources.push(s);
+    }
+  }
   const disSources = [
     c.exhaustion > 0 && "Exhaustion",
     c.poisoned && "Poisoned",
     c.frightened && "Frightened",
     effMods.abilityCheckDisadv?.has(ability) && "Active power",
     effMods.mindTrickDisadv && (skill === "Perception" || skill === "Investigation") && "Mind Trick",
-    armor?.nonproficient && ["Strength", "Dexterity"].includes(ability) && "Armor proficiency"
+    armor?.nonproficient && ["Strength", "Dexterity"].includes(ability) && "Armor proficiency",
+    ...(skillEff ? skillEff.disadvantage : [])
+  ].filter(Boolean);
+  if (typeof carryingStats === "function" && ["Strength", "Dexterity", "Constitution"].includes(ability)) {
+    const carry = carryingStats(profile, session);
+    if (carry.hasDisadvantage) disSources.push(carry.overloaded ? "Overloaded" : carry.overCapacity ? "Over carrying capacity" : "Heavily encumbered");
+  }
+  const localSkillCond = [
+    skill === "Athletics" && speciesRecord(profile?.species)?.climbAdv && "Advantage on climbing checks",
+    skill === "Investigation" && speciesRecord(profile?.species)?.investigationAdv && ("Advantage: " + speciesRecord(profile?.species).investigationAdv),
+    skill === "Insight" && speciesRecord(profile?.species)?.insightAdv && ("Advantage: " + speciesRecord(profile?.species).insightAdv),
+    (skill === "Perception" || skill === "Survival") && (session?.effects || []).some(e => normalizeName(e.name) === "ranger's quarry" || normalizeName(e.name) === "ranger’s quarry") && "Advantage to find your Ranger’s Quarry (same planet)",
+    skill === "Lore" && normalizeName(profile?.species) === "mirialan" && "Expertise on Lore checks regarding the Force or spiritual matters (Spiritual)",
+    ...(skillEff && Array.isArray(skillEff.localConditional) ? skillEff.localConditional : (skillEff ? skillEff.conditional : []))
+  ].filter(Boolean);
+  const fullSkillCond = [
+    c.sightBlocked && "Checks requiring sight automatically fail",
+    c.deafened && "Checks requiring hearing automatically fail",
+    skill === "Athletics" && speciesRecord(profile?.species)?.climbAdv && "Advantage on climbing checks",
+    skill === "Investigation" && speciesRecord(profile?.species)?.investigationAdv && ("Advantage: " + speciesRecord(profile?.species).investigationAdv),
+    skill === "Insight" && speciesRecord(profile?.species)?.insightAdv && ("Advantage: " + speciesRecord(profile?.species).insightAdv),
+    (session?.effects || []).some(e => normalizeName(e.name) === "daring escape") && "Advantage to break grapple, restrain, or slow (Daring Escape)",
+    effMods.flexibleAdv && "Advantage on checks to escape grapple or restraint (Mutate/Augment: Flexible)",
+    traits.isBerserker && (profile.level || 1) >= 18 && ability === "Strength" && ("Indomitable Might: minimum total " + (effectiveScores(profile, session).Strength || 10)),
+    (skill === "Perception" || skill === "Survival") && (session?.effects || []).some(e => normalizeName(e.name) === "ranger's quarry" || normalizeName(e.name) === "ranger’s quarry") && "Advantage to find your Ranger’s Quarry (same planet)",
+    skill === "Lore" && normalizeName(profile?.species) === "mirialan" && "Expertise on Lore checks regarding the Force or spiritual matters (Spiritual)",
+    ...(skillEff ? skillEff.conditional : [])
   ].filter(Boolean);
   return {
-    advantage: advSources.join(", "),
-    disadvantage: disSources.join(", "),
+    advantage: dedupeSources(advSources).join(", "),
+    disadvantage: dedupeSources(disSources).join(", "),
     automatic: c.incapacitated && ["Strength", "Dexterity", "Constitution"].includes(ability),
-    conditional: [
-      c.sightBlocked && "Checks requiring sight automatically fail",
-      c.deafened && "Checks requiring hearing automatically fail",
-      skill === "Stealth" && armor?.silent && "Advantage on sound-based Stealth checks (Silent armor)",
-      skill === "Stealth" && armor?.concealing && "Advantage on sight-based Stealth checks (Concealing shield)",
-      skill === "Stealth" && armor?.obtrusiveShield && "Disadvantage on sight-based Stealth checks (Obtrusive shield)",
-      ability === "Strength" && armor?.steadfast && "Advantage to avoid being moved (Steadfast)",
-      skill === "Athletics" && speciesRecord(profile?.species)?.climbAdv && "Advantage on climbing checks",
-      skill === "Investigation" && speciesRecord(profile?.species)?.investigationAdv && ("Advantage: " + speciesRecord(profile?.species).investigationAdv),
-      skill === "Insight" && speciesRecord(profile?.species)?.insightAdv && ("Advantage: " + speciesRecord(profile?.species).insightAdv),
-      ability === "Strength" && ownedCombatOptions(profile, session).styles.some(s => s.name === "Defense Style") && "Advantage to avoid being moved (Defense Style)",
-      ability === "Dexterity" && ownedCombatOptions(profile, session).styles.some(s => s.name === "Equilibrium Style") && "Advantage to avoid being moved (Equilibrium Style)",
-      (session?.effects || []).some(e => normalizeName(e.name) === "daring escape") && "Advantage to break grapple, restrain, or slow (Daring Escape)",
-      effMods.flexibleAdv && "Advantage on checks to escape grapple or restraint (Mutate/Augment: Flexible)",
-      ownedCombatOptions(profile, session).styles.some(s => s.name === "Guerrilla Style") && "Advantage to avoid forced movement (Guerrilla Style)",
-      ownedCombatOptions(profile, session).styles.some(s => s.name === "Spotting Style") && "Advantage on checks to see through illusions (Spotting Style)",
-      traits.isBerserker && (profile.level || 1) >= 18 && ability === "Strength" && "Indomitable Might: minimum total equals Strength score",
-      traits.isOperative && (profile.level || 1) >= 11 && "Reliable Talent: minimum roll threshold on proficient checks",
-      typeof hasClassOption === "function" && hasClassOption(profile, session, "Hardened Mind") && ability === "Intelligence" && "Advantage on Intelligence checks to discern illusions (Hardened Mind)",
-      (skill === "Perception" || skill === "Survival") && (session?.effects || []).some(e => normalizeName(e.name) === "ranger's quarry" || normalizeName(e.name) === "ranger’s quarry") && "Advantage to find your Ranger’s Quarry (same planet)",
-      skill === "Lore" && normalizeName(profile?.species) === "mirialan" && "Expertise on Lore checks regarding the Force or spiritual matters (Spiritual)"
-    ].filter(Boolean).join(". ")
+    conditional: fullSkillCond.join(". "),
+    badgeConditional: localSkillCond.join(". ")
   };
 }
 
@@ -586,87 +754,79 @@ function saveMode(profile, session, ability, armor) {
   if (ability === "Constitution" && (sp?.conSaveAdv || traits.gamorreanToughness)) advSources.push(sp?.name || "Species");
   if (ability === "Dexterity" && sp?.dexSaveAdv) advSources.push("Small and Nimble");
   if (ability === "Strength" && session.rage) advSources.push("Rage");
-  if (ability === "Constitution" && session.rage && typeof hasClassOption === "function" && hasClassOption(profile, session, "Acklay's Instinct")) advSources.push("Acklay's Instinct");
+  // Acklay's Instinct CON save advantage is collected via effect-engine saveMod
   if (ability === "Dexterity" && c.dodging) advSources.push("Dodging");
   if (ability === "Dexterity" && effMods.dexSaveAdv) advSources.push("Active power");
   if (effMods.allSaveAdv) advSources.push("Active power");
   if (ability === "Wisdom" && effMods.wisSaveAdv) advSources.push("Beacon of Hope");
   if (effMods.strDexConSaveAdv && ["Strength", "Dexterity", "Constitution"].includes(ability)) advSources.push("Vitality Shield");
+  const saveEff = typeof resolveSaveEffects === "function" ? resolveSaveEffects(profile, session, ability) : null;
+  if (saveEff) {
+    for (const s of saveEff.advantage) {
+      if (session.rage && ability === "Strength" && normalizeName(s) === "berserker") continue;
+      advSources.push(s);
+    }
+  }
   const disSources = [
     ability === "Dexterity" && sp?.dexSaveDisadv && "Slow and Lethargic",
     ability === "Dexterity" && effMods.dexSaveDisadv && "Master Malacia",
     effMods.abilitySaveDisadv?.has(ability) && "Active power",
     c.exhaustion >= 3 && "Exhaustion",
     c.restrained && ability === "Dexterity" && "Restrained",
-    armor?.nonproficient && ["Strength", "Dexterity"].includes(ability) && "Armor proficiency"
+    armor?.nonproficient && ["Strength", "Dexterity"].includes(ability) && "Armor proficiency",
+    ...(saveEff ? saveEff.disadvantage : [])
   ].filter(Boolean);
-  const condParts = [];
-  if (ability === "Dexterity" && traits.dangerSense && !c.sightBlocked && !c.deafened && !c.incapacitated) {
-    condParts.push("Danger Sense grants advantage against effects you can see.");
+  const condParts = [...(saveEff ? saveEff.conditional : [])];
+  const localCondParts = [...(saveEff && Array.isArray(saveEff.localConditional) ? saveEff.localConditional : (saveEff ? saveEff.conditional : []))];
+  const pushLocal = msg => { condParts.push(msg); localCondParts.push(msg); };
+  const hasCond = re => condParts.some(p => re.test(p));
+  if (ability === "Dexterity" && traits.dangerSense && !c.sightBlocked && !c.deafened && !c.incapacitated && !hasCond(/effects you can see|danger sense/i)) {
+    pushLocal("Danger Sense grants advantage against effects you can see.");
   }
-  if (ability === "Constitution" && session.concentration && (hasFeat(session, "Combat Caster") || hasFeat(session, "War Caster"))) {
-    condParts.push("Advantage on Constitution saves to maintain Concentration.");
+  if (ability === "Dexterity" && traits.shieldBonusToDexSaves && armor?.shield && !c.incapacitated && !hasCond(/shield mastery/i)) {
+    pushLocal("Shield Mastery: +" + (Number(armor.shield.ac) || 0) + " shield bonus to Dexterity saves vs powers and harmful effects.");
   }
-  if (ability === "Dexterity" && traits.shieldBonusToDexSaves && armor?.shield && !armor?.nonproficient) {
-    condParts.push("Shield Mastery: add +" + (Number(armor.shield.ac) || 0) + " shield bonus vs powers & harmful effects.");
-  }
-  if (ability === "Constitution" && sp?.poisonSaveAdv) condParts.push("Advantage on saves against poison (Natural Resistance).");
-  if (sp?.ionLightningSaveDisadv) condParts.push("Disadvantage on saving throws against effects dealing ion or lightning damage (Droid Vulnerabilities).");
-  if (sp?.closedMind && (ability === "Wisdom" || ability === "Charisma")) condParts.push("Advantage on " + ability + " saves against force powers (Closed Mind).");
-  if (ability === "Constitution" && effMods.poisonSaveAdv) condParts.push("Advantage on saves against poison (Active power).");
-  if (ability === "Constitution" && sp?.coldSaveAdv) condParts.push("Advantage on saves vs extreme cold.");
-  if (ability === "Constitution" && sp?.heatSaveAdv) condParts.push("Advantage on saves vs extreme heat.");
-  if (ability === "Strength" && sp?.climbAdv) condParts.push("Advantage on Strength saves involving climbing.");
-  if (ability === "Strength" && armor?.steadfast) condParts.push("Advantage on Strength saves to avoid being moved (Steadfast).");
-  if (ability === "Strength" && ownedCombatOptions(profile, session).styles.some(s => s.name === "Defense Style")) {
-    condParts.push("Advantage on Strength saves to avoid being moved (Defense Style).");
-  }
-  if (ability === "Dexterity" && ownedCombatOptions(profile, session).styles.some(s => s.name === "Equilibrium Style")) {
-    condParts.push("Advantage on Dexterity saves to avoid being moved (Equilibrium Style).");
-  }
-  if (armor?.insulated > 0) {
-    condParts.push("Insulated " + armor.insulated + ": treat d20 rolls below " + armor.insulated + " as " + armor.insulated + " vs ion/lightning damage.");
+  if (ability === "Constitution" && sp?.poisonSaveAdv && !hasCond(/against poison/i)) pushLocal("Advantage on saves against poison (Natural Resistance).");
+  if (sp?.ionLightningSaveDisadv && !hasCond(/ion or lightning/i)) condParts.push("Disadvantage on saving throws against effects dealing ion or lightning damage (Droid Vulnerabilities).");
+  if (sp?.closedMind && (ability === "Wisdom" || ability === "Charisma") && !hasCond(/against force powers|closed mind/i)) pushLocal("Advantage on " + ability + " saves against force powers (Closed Mind).");
+  if (ability === "Constitution" && effMods.poisonSaveAdv) pushLocal("Advantage on saves against poison (Active power).");
+  if (ability === "Constitution" && sp?.coldSaveAdv) pushLocal("Advantage on saves vs extreme cold.");
+  if (ability === "Constitution" && sp?.heatSaveAdv) pushLocal("Advantage on saves vs extreme heat.");
+  if (ability === "Strength" && sp?.climbAdv) pushLocal("Advantage on Strength saves involving climbing.");
+  if (ability === "Dexterity" && armor?.shieldAnchored && armor?.anchorCoverAC > 0) {
+    pushLocal("Anchored shield cover: +" + armor.anchorCoverAC + " to Dexterity saving throws.");
   }
   if ((session?.effects || []).some(e => normalizeName(e.name) === "daring escape")) {
     condParts.push("Advantage on saves to break grapple, restrain, or slow (Daring Escape).");
   }
-  if (ownedCombatOptions(profile, session).styles.some(s => s.name === "Guerrilla Style")) {
-    condParts.push("Advantage on saves to avoid forced movement (Guerrilla Style).");
-  }
-  if (ownedCombatOptions(profile, session).styles.some(s => s.name === "Spotting Style")) {
-    condParts.push("Advantage on saves against illusions (Spotting Style).");
-  }
-  if ((ability === "Wisdom" || ability === "Charisma") && ownedCombatOptions(profile, session).masteries.some(m => m.name === "Berserk Mastery")) {
-    condParts.push("Advantage on saves against being frightened or mind-controlled (Berserk Mastery).");
-  }
-  if (ability === "Constitution" && hasFeat(session, "Heat Shielded")) {
-    condParts.push("Advantage on saves against extreme heat (Heat Shielded).");
-  }
-  if (ability === "Dexterity" && ((traits.isMonk || traits.isOperative) && (profile.level || 1) >= 7)) {
-    condParts.push("Evasion: take 0 damage on pass, half damage on fail.");
+  if (ability === "Dexterity" && ((traits.isMonk || traits.isOperative) && (profile.level || 1) >= 7) && !hasCond(/evasion/i)) {
+    pushLocal("Evasion: take 0 damage on pass, half damage on fail.");
   }
   const isConscious = !c.unconscious && !c.dead;
-  if ((session?.effects || []).some(e => normalizeName(e.name) === "aura of conviction") || (traits.isGuardian && (profile.level || 1) >= 3 && isConscious && typeof hasClassOption === "function" && hasClassOption(profile, session, "Aura of Conviction"))) {
+  if ((session?.effects || []).some(e => normalizeName(e.name) === "aura of conviction") && !hasCond(/aura of conviction/i)) {
     condParts.push("Advantage on saves against Charmed or Frightened (Aura of Conviction).");
   }
-  if ((session?.effects || []).some(e => normalizeName(e.name) === "mesmer's routine") || (traits.isScout && (profile.level || 1) >= 3 && isConscious && typeof hasClassOption === "function" && hasClassOption(profile, session, "Mesmer's Routine"))) {
+  if ((session?.effects || []).some(e => normalizeName(e.name) === "mesmer's routine") && !hasCond(/mesmer's routine/i)) {
     condParts.push("Advantage on saves against being Incapacitated or put to sleep (Mesmer's Routine).");
   }
-  if (ability === "Constitution" && ((session?.effects || []).some(e => normalizeName(e.name) === "nomad's routine") || (traits.isScout && (profile.level || 1) >= 3 && isConscious && typeof hasClassOption === "function" && hasClassOption(profile, session, "Nomad's Routine")))) {
-    condParts.push("Advantage on CON saves against unenhanced exhaustion and extreme environments (Nomad's Routine).");
+  if (ability === "Constitution" && (session?.effects || []).some(e => normalizeName(e.name) === "nomad's routine") && !hasCond(/nomad's routine/i)) {
+    pushLocal("Advantage on Constitution saves against unenhanced exhaustion (Nomad's Routine).");
   }
-  if (typeof hasClassOption === "function" && hasClassOption(profile, session, "Hardened Mind")) {
-    condParts.push("Advantage on saves against illusions (Hardened Mind).");
+  const dedupedCond = dedupeSources(condParts);
+  const conditional = dedupedCond.join(" ");
+  const narrowRibbonRe = /addiction|substance|\baging\b|death saving throws|unenhanced exhaustion|extreme (?:cold|heat)/i;
+  const badgeConditional = dedupeSources(localCondParts).filter(s => !narrowRibbonRe.test(s)).join(" ");
+  if (typeof carryingStats === "function" && ["Strength", "Dexterity", "Constitution"].includes(ability)) {
+    const carry = carryingStats(profile, session);
+    if (carry.hasDisadvantage) disSources.push(carry.overloaded ? "Overloaded" : carry.overCapacity ? "Over carrying capacity" : "Heavily encumbered");
   }
-  if (typeof hasClassOption === "function" && hasClassOption(profile, session, "Resolute")) {
-    const intM = effectiveModifier(profile, session, "Intelligence", c);
-    condParts.push("Resolute: add " + signed(intM) + " (Intelligence) to saves against Charmed or Frightened.");
-  }
-  const conditional = condParts.join(" ");
   return {
-    advantage: advSources.join(", "),
-    disadvantage: disSources.join(", "),
+    advantage: dedupeSources(advSources).join(", "),
+    disadvantage: dedupeSources(disSources).join(", "),
     conditional,
+    badgeConditional,
+    rollFloor: saveEff?.rollFloor || 0,
+    rollFloorSource: saveEff?.rollFloorSource || "",
     automatic: c.automaticSaveFailure && ["Strength", "Dexterity"].includes(ability)
   };
 }

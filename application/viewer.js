@@ -1,4 +1,26 @@
+let _lastAuditSig = "";
+let _lastAuditPending = [];
+function _structuralAuditSignature(profile, session) {
+  return JSON.stringify([
+    profile?.name, profile?.level, profile?.className, profile?.species, profile?.background,
+    session?.approach, session?.approaches, session?.speciesChoice, session?.forceAffinity, session?.classChoice, session?.signaturePower,
+    session?.classImprovementEnabled, session?.classImprovements, session?.multiclassImprovements, session?.splashclassImprovements,
+    (session?.feats || []).length, (session?.feats || []).map(f => [f.name, f.choice, f.abilityChoice, f.multiChoice, f.powersChoice]),
+    (session?.classOptions || []).length, session?.classOptionChoices,
+    session?.speciesTraitChoices, session?.backgroundChoices, session?.archetypeFeatureChoices,
+    session?.skillOverrides,
+    (session?.powers || []).length, (session?.maneuvers || []).length,
+    (session?.fightingStyles || []).length, (session?.fightingMasteries || []).length, (session?.lightsaberForms || []).length
+  ]);
+}
+
 function render() {
+  const run = () => _renderInner();
+  if (typeof withEffectCache === "function") return withEffectCache(run);
+  return run();
+}
+
+function _renderInner() {
   getElementById("loadError").hidden = true;
   document.body.classList.toggle("light", app.light);
   getElementById("theme").setAttribute("aria-checked", String(!app.light));
@@ -9,12 +31,39 @@ function render() {
   getElementById("stickyState").hidden = !character;
   document.querySelector(".mobileNav").hidden = !character;
   getElementById("characterName").textContent = character?.profile.name || "SW5e Character Viewer";
-  getElementById("characterSubtitle").textContent = character ? "Level " + character.profile.level + " " +
-    character.profile.species + " " + character.profile.className : "";
+  const _mcList = character && typeof characterClasses === "function" ? characterClasses(character.profile, character.session) : [];
+  const _clsDisp = character && typeof formatClassSummary === "function" ? formatClassSummary(character.profile, character.session) : (character?.profile.className || "");
+  getElementById("characterSubtitle").textContent = character
+    ? (_mcList.length > 1
+      ? ("Level " + character.profile.level + " " + character.profile.species + " · " + _clsDisp)
+      : ("Level " + character.profile.level + " " + character.profile.species + " " + character.profile.className))
+    : "";
   getElementById("notice").textContent = notice;
   getElementById("feedback").hidden = !notice;
   const expBtn = getElementById("exportBackup");
   if (expBtn) expBtn.disabled = !app.character;
+  const auditMenuBtn = getElementById("openAuditMenuBtn");
+  if (auditMenuBtn) auditMenuBtn.disabled = !app.character;
+  const setupBtn = getElementById("setupAuditBtn");
+  if (setupBtn) {
+    let pending = [];
+    if (character && typeof auditCharacterCompleteness === "function") {
+      const sig = _structuralAuditSignature(character.profile, character.session);
+      if (sig !== _lastAuditSig) {
+        _lastAuditSig = sig;
+        _lastAuditPending = auditCharacterCompleteness(character.profile, character.session).filter(it => it.severity !== "info");
+      }
+      pending = _lastAuditPending;
+    } else {
+      _lastAuditSig = "";
+      _lastAuditPending = [];
+    }
+    setupBtn.hidden = !pending.length;
+    if (pending.length) {
+      setupBtn.textContent = "Setup · " + pending.length;
+      setupBtn.title = pending.length + " missing feature" + (pending.length === 1 ? "" : "s") + " or unresolved choice" + (pending.length === 1 ? "" : "s");
+    }
+  }
   for (const id of ["undo", "feedbackUndo"]) {
     const button = getElementById(id);
     button.disabled = !app.history.length;
@@ -30,10 +79,17 @@ function render() {
   renderActions(profile, session);
   renderResources(profile, session);
   renderSkills(profile, session);
-  renderCollections(profile, session);
-  if (typeof renderPowerManager === "function") renderPowerManager(profile, session);
-  if (typeof renderCombatOptionsManager === "function") renderCombatOptionsManager(profile, session);
-  if (typeof renderBinderCharacterPages === "function") renderBinderCharacterPages(profile, session);
+  const binderOpen = Boolean(getElementById("binderDetails")?.open);
+  const anyCatalogOpen = Boolean(
+    getElementById("itemCatalog")?.open || getElementById("featCatalog")?.open ||
+    getElementById("powerCatalog")?.open || getElementById("optionCatalog")?.open
+  );
+  _binderDirty = true;
+  if (binderOpen || anyCatalogOpen) {
+    _renderBinderNow(profile, session);
+  } else {
+    _syncBinderTabBadges(profile, session);
+  }
   const powersGroup = getElementById("binderPowersGroup");
   if (powersGroup) {
     const anyPowerTab = [...powersGroup.querySelectorAll("button[role='tab']")].some(t => !t.hidden);
@@ -48,6 +104,46 @@ function render() {
 }
 
 let binderTabs = null;
+let _binderDirty = true;
+
+function _syncBinderTabBadges(profile, session) {
+  const invCount = getElementById("inventoryTabCount");
+  if (invCount) invCount.textContent = String((session.equipped || []).length);
+  const featCount = getElementById("featTabCount");
+  if (featCount) featCount.textContent = String((session.feats || []).length);
+  if (typeof castingStats === "function" && typeof knownPowerRecords === "function") {
+    const casting = castingStats(profile, session);
+    const ft = getElementById("forcePowerTab");
+    const tt = getElementById("techPowerTab");
+    if (ft) ft.hidden = !casting.hasForce;
+    if (tt) tt.hidden = !casting.hasTech;
+    const fc = getElementById("forcePowerTabCount");
+    if (fc) fc.textContent = String(knownPowerRecords(profile, "Force", session).length);
+    const tc = getElementById("techPowerTabCount");
+    if (tc) tc.textContent = String(knownPowerRecords(profile, "Tech", session).length);
+  }
+  if (typeof conditionalOptionVisibility === "function" && typeof combatOptionDefs !== "undefined") {
+    const vis = conditionalOptionVisibility(profile, session);
+    for (const def of combatOptionDefs) {
+      const tab = getElementById(def.tabId);
+      if (tab) tab.hidden = !vis[def.key];
+      const badge = getElementById(def.tabId + "Count");
+      if (badge) badge.textContent = String((session[def.key] || []).length);
+    }
+  }
+}
+
+function _renderBinderNow(profile, session) {
+  const run = () => {
+    renderCollections(profile, session);
+    if (typeof renderPowerManager === "function") renderPowerManager(profile, session);
+    if (typeof renderCombatOptionsManager === "function") renderCombatOptionsManager(profile, session);
+    if (typeof renderBinderCharacterPages === "function") renderBinderCharacterPages(profile, session);
+    _binderDirty = false;
+  };
+  if (typeof withEffectCache === "function") withEffectCache(run);
+  else run();
+}
 
 function createTabController(ids) {
   const tabs = ids.map(getElementById).filter(Boolean);
@@ -150,11 +246,109 @@ function wireMobileNav() {
 
 function wireViewer() {
   wireDialogDismissal(getElementById("infoModal"), getElementById("closeInfo"));
+  getElementById("closeInfoDone")?.addEventListener("click", () => getElementById("infoModal")?.close());
+  getElementById("infoBack")?.addEventListener("click", () => { if (typeof popInfoModal === "function") popInfoModal(); });
   wireSheetMenu();
   wireMobileNav();
   wireImportDialog();
-  getElementById("currentFormInfo").addEventListener("click", showCharacterInfo);
-  getElementById("openStandardActions")?.addEventListener("click", () => showStandardActionsDialog());
+  getElementById("formTitle")?.addEventListener("click", showCharacterInfo);
+  getElementById("setupAuditBtn")?.addEventListener("click", ev => { if (typeof openCharacterAuditModal === "function") openCharacterAuditModal(ev.currentTarget); });
+  getElementById("openAuditMenuBtn")?.addEventListener("click", ev => { if (typeof openCharacterAuditModal === "function") openCharacterAuditModal(ev.currentTarget); });
+  getElementById("openQuickRefBtn")?.addEventListener("click", () => { if (typeof showQuickReferenceDialog === "function") showQuickReferenceDialog(); });
+  getElementById("openSavesInfo")?.addEventListener("click", ev => {
+    showMathPopover(ev.currentTarget, "Saving Throws", [
+      ["Formula", "1d20 + Ability modifier + Proficiency (if P) or 2× Proficiency (if E)"],
+      ["P / E tags", "P = Proficient · E = Expertise"],
+      ["Cover (Dexterity saves)", "One-quarter: +2 · Half: +3 · Three-quarters: +5"],
+      ["Click any save", "Tap any saving throw to inspect its live formula and adjust its temporary modifier"]
+    ], "SW5e Player's Handbook Ch. 7 & 9 · Natural 1/20 only auto-fail/succeed on attack rolls and death saves, not standard saving throws.");
+  });
+  getElementById("openResourcesInfo")?.addEventListener("click", ev => {
+    showMathPopover(ev.currentTarget, "Resources & Rests", [
+      ["SR tag", "Recharges on a Short Rest (1 hr) or Long Rest (8 hr) — includes Tech Points, Focus Points, and Superiority Dice"],
+      ["LR tag", "Recharges on a Long Rest (8 hr) — includes Force Points and daily features"],
+      ["Force & Tech casting", "Power cost = power level + 1 points (At-will = 0; Level 1 = 2 points; Level 2 = 3 points)"],
+      ["Hit Dice", "Spent inside the Short Rest dialog to heal (1 Hit Die + Constitution modifier per die)"]
+    ], "Tap any pip or +/− control to track spending; use Short Rest or Long Rest below to preview and recover pools.");
+  });
+  getElementById("binderDetails")?.addEventListener("toggle", ev => {
+    if (ev.currentTarget.open && _binderDirty && app.character) {
+      _renderBinderNow(app.character.profile, app.character.session);
+    }
+  });
+  getElementById("openStandardActions")?.addEventListener("click", ev => showStandardActionsDialog(ev.currentTarget));
+  getElementById("openBonusActionInfo")?.addEventListener("click", ev => showBonusActionInfoDialog(ev.currentTarget));
+  getElementById("openReactionInfo")?.addEventListener("click", ev => showReactionInfoDialog(ev.currentTarget));
+  getElementById("hpMathTrigger")?.addEventListener("click", ev => {
+    if (!app.character) return;
+    const {profile, session} = app.character;
+    const scores = effectiveScores(profile, session);
+    const spHp = speciesHpBonus(profile, session);
+    const ftHp = featHpBonus(profile, session);
+    const maxHp = hitPointMaximum(profile, session);
+    const conMod = modifier(scores.Constitution);
+    const conTotal = profile.level * conMod;
+    const hpTerms = [];
+    if (profile.hpOverride) {
+      hpTerms.push({ label: "Override", value: String(profile.hpOverride) });
+    } else {
+      if (profile.hpDice) hpTerms.push({ label: "Hit Dice", value: String(profile.hpDice) });
+      hpTerms.push({ label: profile.level + "×CON", value: signed(conTotal), signed: true });
+      if (spHp) hpTerms.push({ label: profile.species || "Species", value: signed(spHp), signed: true, source: profile.species ? { kind: "species", name: profile.species } : null });
+      const hpEffPop = typeof resolveHpEffects === "function" ? resolveHpEffects(profile, session) : null;
+      const featHpSrcs = (hpEffPop?.sources || []).filter(s => s.kind === "feat").map(s => ({ label: s.name, source: s.sourceObj || { kind: "feat", name: s.name } }));
+      if (ftHp) hpTerms.push({ label: "Feats", value: signed(ftHp), signed: true, ...(featHpSrcs.length ? { sources: featHpSrcs } : {}) });
+      if (profile.extraHpBonus) hpTerms.push({ label: "Extra", value: signed(profile.extraHpBonus), signed: true });
+      const effHp = maxHp - ((profile.hpDice || 0) + conTotal + spHp + ftHp + (profile.extraHpBonus || 0));
+      const effHpSrcs = (hpEffPop?.sources || []).filter(s => s.kind !== "feat" && s.kind !== "species").map(s => ({ label: s.name, source: s.sourceObj || { kind: s.kind, name: s.name } }));
+      if (effHp) hpTerms.push({ label: "Effects", value: signed(effHp), signed: true, ...(effHpSrcs.length ? { sources: effHpSrcs } : {}) });
+    }
+    const hpEffPop = typeof resolveHpEffects === "function" ? resolveHpEffects(profile, session) : null;
+    let minHealVal = "";
+    if (hpEffPop && hpEffPop.enhancedHealingMin > 0) {
+      const wrap = document.createElement("span");
+      wrap.append(
+        document.createTextNode(hpEffPop.enhancedHealingMin + " HP minimum (capped at effect max · "),
+        renderSourceLinks(hpEffPop.healingMods.map(h => ({ label: h.source, source: h.sourceObj || h.source }))),
+        document.createTextNode(")")
+      );
+      minHealVal = wrap;
+    }
+    showMathPopover(ev.currentTarget, "Hit Points", [
+      ["Current HP", session.hp + " / " + maxHp],
+      ["Temporary HP", session.temp ? session.temp + (session.tempSource ? " (" + session.tempSource + ")" : "") : ""],
+      ["Enhanced healing", minHealVal],
+      ["Instant death", "Remaining damage ≥ " + maxHp + " at 0 HP"]
+    ], "Temporary HP absorbs damage first and does not stack (keep the higher total).", [], {
+      rule: "Hit Dice + (Level × Constitution modifier) + Bonuses",
+      terms: hpTerms,
+      total: maxHp + " Max HP"
+    });
+  });
+  getElementById("openDeathSaveInfo")?.addEventListener("click", ev => {
+    const hpEffD = app.character && typeof resolveHpEffects === "function" ? resolveHpEffects(app.character.profile, app.character.session) : null;
+    let rollTxt = "1d20 (no ability modifier) · DC 10";
+    if (hpEffD && hpEffD.deathSaveBonus) {
+      const wrap = document.createElement("span");
+      const dsItems = (hpEffD.deathSaveSourceObjs?.length ? hpEffD.deathSaveSourceObjs : hpEffD.deathSaveSources.map(s => ({ name: s })))
+        .map(o => ({ label: o.name, source: o }));
+      wrap.append(
+        document.createTextNode("1d20 " + signed(hpEffD.deathSaveBonus) + " ("),
+        renderSourceLinks(dsItems),
+        document.createTextNode(") · DC 10")
+      );
+      rollTxt = wrap;
+    }
+    showMathPopover(ev.currentTarget, "Death Saving Throws", [
+      ["When", "Start of your turn while at 0 HP"],
+      ["Roll", rollTxt],
+      ["3 Successes", "Stabilize at 0 HP (Unconscious)"],
+      ["3 Failures", "Character dies"],
+      ["Natural 20", "Immediately regain 1 HP"],
+      ["Natural 1", "Counts as 2 failures"],
+      ["Damage at 0 HP", "1 failure (2 failures on a critical hit)"]
+    ], "SW5e Player's Handbook Ch. 9 · Any healing immediately resets death saves and wakes you up.");
+  });
   getElementById("theme").addEventListener("click", () => { app.light = !app.light; save(); render(); });
   getElementById("exportBackup")?.addEventListener("click", () => {
     const json = exportStateJSON();
@@ -190,6 +384,7 @@ function wireViewer() {
     ["damage", "Applied damage", (session, profile, amount) => {
       const resisted = damageResisted.getAttribute("aria-pressed") === "true";
       const corrodedWeapon = damageCorroded.getAttribute("aria-pressed") === "true";
+      delete session._lastConcentrationPrompt;
       applyDamage(session, profile, amount, resisted, corrodedWeapon);
     }],
     ["heal", "Healed HP", (session, profile, amount) => recoverHP(session, amount, hitPointMaximum(profile, session))],
@@ -199,9 +394,27 @@ function wireViewer() {
     ["setTemp", "Set temporary HP", (session, profile, amount) => { session.temp = amount; session.tempSource = ""; }],
     ["clearTemp", "Cleared temporary HP", session => { session.temp = 0; session.tempSource = ""; }]
   ]) {
-    getElementById(id).addEventListener("click", () => {
+    getElementById(id).addEventListener("click", event => {
       const amount = Math.max(0, Math.floor(Number(getElementById("amount").value) || 0));
-      update(label, (session, profile) => operation(session, profile, amount));
+      let zeroTrig = null;
+      let zeroPrompt = null;
+      update(label, (session, profile) => {
+        operation(session, profile, amount);
+        if (session._lastZeroHpTrigger) {
+          zeroTrig = session._lastZeroHpTrigger;
+          delete session._lastZeroHpTrigger;
+        }
+        if (session._lastZeroHpPrompt && (Array.isArray(session._lastZeroHpPrompt) ? session._lastZeroHpPrompt.length : session._lastZeroHpPrompt.stoppers?.length)) {
+          zeroPrompt = session._lastZeroHpPrompt;
+          delete session._lastZeroHpPrompt;
+        }
+      });
+      if (zeroTrig) {
+        notice = zeroTrig.name + " triggered — dropped to 1 HP instead";
+        render();
+      } else if (zeroPrompt && typeof openZeroHpStopperDialog === "function") {
+        openZeroHpStopperDialog(zeroPrompt, event.currentTarget);
+      }
     });
   }
 
@@ -210,16 +423,18 @@ function wireViewer() {
     if (pip) changePip(pip.dataset.resource, Number(pip.dataset.value));
   });
 
-  createTabController(["actionsTab", "skillsTab"]);
+  createTabController(["actionsTab", "skillsTab", "abilitiesTab"]);
   binderTabs = createTabController([
     "classTab", "archetypeTab", "backgroundTab",
     "forcePowerTab", "techPowerTab", "maneuversTab",
     "fightingStylesTab", "fightingMasteriesTab", "lightsaberFormsTab",
     "inventoryTab", "featTab"
   ]);
-  for (const id of ["skillSearch", "skillSort"]) {
-    getElementById(id).addEventListener("input", () => renderSkills(app.character.profile, app.character.session));
-  }
+  const onSkillSearch = typeof _debounceFn === "function"
+    ? _debounceFn(() => { if (app.character) withEffectCache(() => renderSkills(app.character.profile, app.character.session)); }, 100)
+    : () => { if (app.character) renderSkills(app.character.profile, app.character.session); };
+  getElementById("skillSearch").addEventListener("input", onSkillSearch);
+  getElementById("skillSort").addEventListener("change", () => { if (app.character) withEffectCache(() => renderSkills(app.character.profile, app.character.session)); });
   wireEffects();
   wireCasting();
   if (typeof wireCombatOptions === "function") wireCombatOptions();
